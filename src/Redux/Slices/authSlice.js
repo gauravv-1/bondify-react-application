@@ -33,6 +33,7 @@ export const signupUser = createAsyncThunk(
         const { data } = error.response;
         return rejectWithValue(data.data.error || "Signup failed.");
       } else {
+        console.log("Net error");
         return rejectWithValue("Network error. Please try again later.");
       }
     }

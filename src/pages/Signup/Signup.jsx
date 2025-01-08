@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signupUser } from "../../Redux/Slices/authSlice"; // import the signup action
 import { Link, useNavigate } from "react-router-dom";
+import AppLogo from './../../assets/logos/AppLogo.png'
+import AppLogo2 from './../../assets/logos/AppLogo2.png'
+import AppLogo3 from './../../assets/logos/AppLogo3.png'
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -29,7 +32,11 @@ const Signup = () => {
       {/* Container */}
       <div className="bg-gray-800 shadow-lg rounded-lg w-full max-w-md px-6 sm:px-8 py-8 sm:py-10">
         {/* Header */}
-        <h2 className="text-3xl font-bold text-center mb-6">Create Account</h2>
+        <div className="flex justify-center items-center h-full mb-3">
+          <img src={AppLogo} width={`${true ? '80px' : '100px'}`} alt="Logo" />
+
+        </div>
+        <h2 className="text-3xl font-bold text-center mb-2">Create Account</h2>
         <p className="text-gray-400 text-center mb-4">
           Join us and connect with the world around you!
         </p>
@@ -49,7 +56,7 @@ const Signup = () => {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           {/* Name Input */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label htmlFor="name" className="block text-gray-300 font-medium mb-2">
               Name
             </label>
@@ -65,7 +72,7 @@ const Signup = () => {
           </div>
 
           {/* Email Input */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label htmlFor="email" className="block text-gray-300 font-medium mb-2">
               Email
             </label>
@@ -81,7 +88,7 @@ const Signup = () => {
           </div>
 
           {/* Password Input */}
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="password" className="block text-gray-300 font-medium mb-2">
               Password
             </label>
@@ -100,9 +107,8 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>
@@ -147,8 +153,8 @@ const Signup = () => {
         <p className="mt-6 text-center text-gray-400">
           Already have an account?{" "}
           <Link to="/">
-        <span className="text-blue-500 hover:underline">Log in</span>
-      </Link>
+            <span className="text-blue-500 hover:underline">Log in</span>
+          </Link>
         </p>
       </div>
     </div>

@@ -1,15 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../Redux/Slices/authSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import MUI Icons
 import { Link, useNavigate } from "react-router-dom";
+import AppLogo from './../../assets/logos/AppLogo.png'
+import AppLogo2 from './../../assets/logos/AppLogo2.png'
+import AppLogo3 from './../../assets/logos/AppLogo3.png'
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { loading, error } = useSelector((state) => state.auth);
     const [credentials, setCredentials] = useState({ email: "", password: "" });
-    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    // Function to check screen size
+    const checkScreenSize = () => {
+        if (window.innerWidth < 768) { // You can change this breakpoint as needed
+            setIsSmallScreen(true);
+        } else {
+            setIsSmallScreen(false);
+        }
+    };
+
+    // useEffect to set the initial screen size and listen for window resize
+    useEffect(() => {
+        checkScreenSize(); // Check screen size on initial render
+
+        // Add event listener for window resize
+        window.addEventListener("resize", checkScreenSize);
+
+        // Clean up event listener on component unmount
+        return () => {
+            window.removeEventListener("resize", checkScreenSize);
+        };
+    }, []);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.id]: e.target.value });
@@ -30,9 +57,15 @@ const Login = () => {
             {/* Container */}
             <div className="bg-gray-800 shadow-lg rounded-lg w-full max-w-md px-6 sm:px-8 py-8 sm:py-10">
                 {/* Header */}
-                <h2 className="text-3xl font-bold text-center mb-6">Welcome Back</h2>
+
+                <div className="flex justify-center items-center h-full mb-3">
+                    <img src={AppLogo} width={`${isSmallScreen?'80px':'100px'}`} alt="Logo" />
+
+                </div>
+                <h2 className="text-xl font-bold text-center mb-3">Welcome Back</h2>
+
                 <p className="text-gray-400 text-center mb-4">
-                    Connect with your friends and the world around you!
+                    Connect with your College friends, clubs, Dept around you!
                 </p>
 
                 {/* Error Message */}
@@ -150,6 +183,7 @@ const Login = () => {
                         <span className="text-blue-500 hover:underline">Sign up</span>
                     </Link>
                 </p>
+
             </div>
         </div>
     );
