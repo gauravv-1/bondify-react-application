@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../Redux/Slices/authSlice";
+import {loginUser } from "../../Redux/Slices/authSlice";
 import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import MUI Icons
 import { Link, useNavigate } from "react-router-dom";
 import AppLogo from './../../assets/logos/AppLogo.png'
@@ -42,11 +42,25 @@ const Login = () => {
         setCredentials({ ...credentials, [e.target.id]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(loginUser(credentials));
-        navigate("/dashboard");
+        const result = await dispatch(loginUser(credentials)).unwrap(); // Wait for the login response
+    
+        if (result) {
+            const token = result.data; // JWT token from the response
+            console.log("Toeken at dispatch Login, ",token);
+            localStorage.setItem("jwt", token); // Store the token
+            
+    
+            // Fetch the user profile
+            // const userProfile = await dispatch(fetchUserProfile(token)).unwrap();
+            
+                
+                navigate("/dashboard"); 
+            
+        }
     };
+    
 
     const handleTogglePassword = () => {
         setShowPassword(!showPassword); // Toggle password visibility
@@ -110,7 +124,7 @@ const Login = () => {
                         />
                         {/* Eye Icon for password visibility */}
                         <div
-                            className="absolute right-4 top-[50px] transform -translate-y-1/2 cursor-pointer flex items-center"
+                            className="absolute right-4 top-[53px] transform -translate-y-1/2 cursor-pointer flex items-center"
                             onClick={handleTogglePassword}
                         >
                             {showPassword ? <VisibilityOff style={{ color: "white" }} /> : <Visibility style={{ color: "white" }} />}

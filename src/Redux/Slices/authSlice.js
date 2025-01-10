@@ -8,6 +8,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await api.post("/api/v1/users/auth/login", credentials);
       console.log("Login Successful:", response.data);
+      console.log("Toeken at Thunk login Login, ",response.data);
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -39,6 +40,24 @@ export const signupUser = createAsyncThunk(
     }
   }
 );
+
+
+export const fetchUserProfile = createAsyncThunk(
+  "auth/fetchUserProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      console.log("At fetchUserProfile thunk");
+      const response = await api.get("/api/v1/users/auth/getUserProfile");
+      console.log("User: -",response.data.data);
+      return response.data.data; // Extract the user data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error || "Failed to fetch user profile."
+      );
+    }
+  }
+);
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -97,7 +116,46 @@ const authSlice = createSlice({
         state.successMessage = null;
       });
   },
+
+  extraReducers: (builder) => {
+    builder
+      // Login Cases
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.data; // Store JWT token
+        state.error = null;
+        state.successMessage = "Login Successful!";
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
+      })
+
+      // Fetch User Profile Cases
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
+        console.log(action.payload, "Payload from fetchUserProfile"); // Debug
+        state.loading = false;
+        state.userProfile = action.payload;
+      })
+      
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+
 });
+
+
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

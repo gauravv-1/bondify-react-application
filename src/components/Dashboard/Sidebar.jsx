@@ -3,19 +3,33 @@ import { Home, Search, Notifications, Message, Person, PostAdd, Email } from "@m
 import AppLogo from './../../assets/logos/AppLogo.png'
 import { Avatar } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useDispatch, useSelector } from "react-redux";
+import usePagination from "@mui/material/usePagination/usePagination";
+
+
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
+    const dispatch = useDispatch();
     const menuItems = [
-        { name: "Home", icon: <Home /> },
-        { name: "Post", icon: <AddCircleOutlineIcon /> },
-        { name: "Search", icon: <Search /> },
-        { name: "Notifications", icon: <Notifications /> },
-        { name: "Messages", icon: <Email /> },
-        { name: "Profile", icon: <Person /> },
+        { name: "Home", icon: <Home sx={{fontSize:35}}/> },
+        { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:35}}/> },
+        { name: "Search", icon: <Search sx={{fontSize:35}}/> },
+        { name: "Notifications", icon: <Notifications sx={{fontSize:35}}/> },
+        { name: "Messages", icon: <Email sx={{fontSize:35}}/> },
+        { name: "Profile", icon: <Person sx={{fontSize:35}}/> },
     ];
 
+    const userProfile = useSelector((state) => state.auth.userProfile);
+    console.log(userProfile, "UserProfile at Sidebar COMP");
+    const handleLogout = () => {
+        dispatch(logout());
+        // Optional: Redirect the user to the login page
+        window.location.href = "/login";
+    };
+
+
     return (
-        <div className="hidden md:flex flex-col bg-gray-800 w-1/3 max-w-sm p-6">
+        <div className="hidden md:flex flex-col border-r-2 border-gray-800 w-1/3 max-w-sm p-6 sticky top-0 h-screen">
             {/* App Logo */}
             <div className="flex items-center justify-center mb-8">
                 <img src={AppLogo} alt="App Logo" width="100px" className="mr-3" />
@@ -32,7 +46,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             }`}
                     >
                         <span className="mr-3">{item.icon}</span>
-                        <span className="text-lg">{item.name}</span>
+                        <span className="text-xl">{item.name}</span>
                     </button>
                 ))}
             </div>
@@ -53,8 +67,8 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             }}
                         />
                         <div className="ml-3">
-                            <p className="text-white text-base font-semibold">Gaurav Pisal</p>
-                            <p className="text-gray-400 text-sm">@gauravpisall</p>
+                            <p className="text-white text-base font-semibold">{userProfile?.name || "Guest"}</p>
+                            <p className="text-gray-400 text-sm">{userProfile?.email || "No email provided"}</p>
                         </div>
                     </div>
 
@@ -75,6 +89,11 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             />
                         </svg>
                     </div>
+
+                    <button
+                        onClick={handleLogout}
+                        className="logout-button bg-red-500 text-white px-4 py-2 rounded-md"
+                    >Logout</button>
                 </div>
             </div>
 
