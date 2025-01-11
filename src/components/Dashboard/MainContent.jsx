@@ -7,6 +7,8 @@ const MainContent = ({ section }) => {
       <h1 className="text-3xl font-bold mb-4">{section}</h1>
       <p className="text-gray-300">Content for {section} section goes here.</p>
       {/* <DisplayPosts/> */}
+      
+      
     </div>
   );
 };

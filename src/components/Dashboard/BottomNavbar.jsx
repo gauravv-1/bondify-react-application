@@ -4,14 +4,14 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const BottomNavbar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
-    { name: "Home", icon: <Home /> },
-    { name: "Post", icon: <AddCircleOutlineIcon  /> },
-    { name: "Messages", icon: <Message /> },
-    { name: "Profile", icon: <Person /> },
+    { name: "Home", icon: <Home sx={{fontSize:30}}/> },
+    { name: "Post", icon: <AddCircleOutlineIcon  sx={{fontSize:30}}/> },
+    { name: "Messages", icon: <Message sx={{fontSize:30}}/> },
+    { name: "Profile", icon: <Person sx={{fontSize:30}}/> },
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 w-full bg-gray-800 flex justify-around py-4">
+    <div className="md:hidden fixed bottom-0 w-full bg-gray-950 flex justify-around py-4">
       {menuItems.map((item) => (
         <button
           key={item.name}

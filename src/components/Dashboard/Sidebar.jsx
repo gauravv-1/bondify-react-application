@@ -11,12 +11,12 @@ import usePagination from "@mui/material/usePagination/usePagination";
 const Sidebar = ({ activeSection, setActiveSection }) => {
     const dispatch = useDispatch();
     const menuItems = [
-        { name: "Home", icon: <Home sx={{fontSize:35}}/> },
-        { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:35}}/> },
+        { name: "Home", icon: <Home sx={{fontSize:32}}/> },
+        { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:32}}/> },
         { name: "Search", icon: <Search sx={{fontSize:35}}/> },
-        { name: "Notifications", icon: <Notifications sx={{fontSize:35}}/> },
-        { name: "Messages", icon: <Email sx={{fontSize:35}}/> },
-        { name: "Profile", icon: <Person sx={{fontSize:35}}/> },
+        { name: "Notifications", icon: <Notifications sx={{fontSize:32}}/> },
+        { name: "Messages", icon: <Email sx={{fontSize:32}}/> },
+        { name: "Profile", icon: <Person sx={{fontSize:32}}/> },
     ];
 
     const userProfile = useSelector((state) => state.auth.userProfile);

@@ -27,11 +27,11 @@ const DisplayPosts = () => {
                     posts.map(post => (
                         <div
                             key={post.id}
-                            className="bg-white shadow-lg rounded-lg overflow-hidden w-80 flex flex-col"
+                            className="bg-gray-950 shadow-lg rounded-lg overflow-hidden w-full flex flex-col "
                         >
                             <div className="p-4 flex-grow">
                                 {/* Post Content */}
-                                <p className="text-lg text-gray-800 truncate">{post.content}</p>
+                                <p className="text-lg text-white-800 truncate">{post.content}</p>
 
                                 {/* Conditional rendering for images */}
                                 {post.imageUrl && Array.isArray(post.imageUrl) && post.imageUrl.length > 0 ? (

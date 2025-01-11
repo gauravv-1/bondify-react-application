@@ -1,19 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../services/api.js"; 
+import api from "../../services/api.js";
 
-
+// Async Thunks
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.post("/api/v1/users/auth/login", credentials);
       console.log("Login Successful:", response.data);
-      console.log("Toeken at Thunk login Login, ",response.data);
       return response.data;
     } catch (error) {
       if (error.response) {
         const { data } = error.response;
-        return rejectWithValue(data.data.error || "Authentication failed.");
+        return rejectWithValue(data.error || "Authentication failed.");
       } else {
         return rejectWithValue("Network error. Please try again later.");
       }
@@ -21,7 +20,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Async thunk for signup
 export const signupUser = createAsyncThunk(
   "auth/signup",
   async (credentials, { rejectWithValue }) => {
@@ -32,24 +30,21 @@ export const signupUser = createAsyncThunk(
     } catch (error) {
       if (error.response) {
         const { data } = error.response;
-        return rejectWithValue(data.data.error || "Signup failed.");
+        return rejectWithValue(data.error || "Signup failed.");
       } else {
-        console.log("Net error");
         return rejectWithValue("Network error. Please try again later.");
       }
     }
   }
 );
 
-
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("At fetchUserProfile thunk");
       const response = await api.get("/api/v1/users/auth/getUserProfile");
-      console.log("User: -",response.data.data);
-      return response.data.data; // Extract the user data
+      console.log("User Profile at fetchUserProfile Thunk:", response.data);
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.error || "Failed to fetch user profile."
@@ -58,65 +53,43 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+export const completeUserProfile = createAsyncThunk(
+  "auth/completeUserProfile",
+  async (profileData, { rejectWithValue }) => {
+    try {
+      console.log("ProfileUpdat Data at Thunk: ",profileData);
+      const response = await api.post("/api/v1/users/profile/completeProfile", profileData);
+      console.log("Complete Profile Successful:", response.data);
+      return response.data; // Assuming the response includes updated user profile
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+        return rejectWithValue(data.error || "Failed to complete profile.");
+      } else {
+        return rejectWithValue("Network error. Please try again later.");
+      }
+    }
+  }
+);
 
+// Slice Definition
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
-    token: null,
-    loading: false,
-    error: null,
-    successMessage: null,
+    user: null, // Stores logged-in user information
+    token: null, // Stores JWT token
+    loading: false, // Loading state for API calls
+    error: null, // Stores error messages
+    successMessage: null, // Stores success messages
+    isProfileComplete: false
   },
   reducers: {
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("jwt");
+      localStorage.removeItem("jwt"); // Clear token from localStorage
     },
   },
-  extraReducers: (builder) => {
-    builder
-      // Login Case
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.successMessage = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.token = action.payload.data;
-        localStorage.setItem("jwt", action.payload.data);
-        state.error = null;
-        state.successMessage = "Login Successful!";
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.successMessage = null;
-      })
-      
-      // Signup Case
-      .addCase(signupUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.successMessage = null;
-      })
-      .addCase(signupUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.data;  // Store user data on successful signup
-        state.token = action.payload.data.id;  // Store token if needed
-        localStorage.setItem("jwt", action.payload.data.id);  // Store token or ID in localStorage
-        state.error = null;
-        state.successMessage = "Signup Successful!";
-      })
-      .addCase(signupUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.successMessage = null;
-      });
-  },
-
   extraReducers: (builder) => {
     builder
       // Login Cases
@@ -127,8 +100,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.data; // Store JWT token
-        state.error = null;
+        state.token = action.payload.data;
+        localStorage.setItem("jwt", action.payload.data);
         state.successMessage = "Login Successful!";
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -137,25 +110,59 @@ const authSlice = createSlice({
         state.successMessage = null;
       })
 
+      // Signup Cases
+      .addCase(signupUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = "Signup Successful!";
+        state.error = null;
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
+      })
+
       // Fetch User Profile Cases
       .addCase(fetchUserProfile.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.isProfileComplete=false;
       })
-      builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
-        console.log(action.payload, "Payload from fetchUserProfile"); // Debug
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.userProfile = action.payload;
+        state.user = action.payload;
+        state.isProfileComplete=action.payload.isProfileComplete;
+        state.error = null;
       })
-      
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // Complete User Profile Cases
+      .addCase(completeUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(completeUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data; // Assuming response.data contains updated profile
+        state.successMessage = "Profile completion successful!";
+        state.error = null;
+      })
+      .addCase(completeUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.successMessage = null;
       });
   },
-
 });
-
-
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
