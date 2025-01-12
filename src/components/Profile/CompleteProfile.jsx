@@ -64,15 +64,19 @@ const CompleteProfile = () => {
     };
 
     try {
-        console.log(payload," Payload of Profile Update");
+      console.log(payload, "Payload of Profile Update");
       await dispatch(completeUserProfile(payload)).unwrap();
       alert("Profile completed successfully!");
+
+      // Refetch user profile
+      await dispatch(fetchUserProfile());
       navigate("/dashboard");
     } catch (err) {
       console.error("Error completing profile:", err);
       alert("Failed to complete profile. Please try again later.");
     }
   };
+
 
   if (loading) {
     return <p>Loading institutes...</p>;

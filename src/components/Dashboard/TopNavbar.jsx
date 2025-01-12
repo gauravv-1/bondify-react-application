@@ -8,7 +8,7 @@ import AppLogo5 from './../../assets/logos/AppLogo5.png'
 import AppLogo6 from './../../assets/logos/AppLogo6.png'
 const TopNavbar = () => {
   return (
-    <div className="md:hidden flex justify-between items-center bg-gray-950 p-4 sticky top-0">
+    <div className="z-50 md:hidden flex justify-between items-center bg-gray-950 p-4 sticky top-0">
       {/* App Logo */}
       <img src={AppLogo6} width='200px' alt="" />
 

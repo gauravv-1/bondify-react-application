@@ -5,11 +5,14 @@ import { Avatar } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useDispatch, useSelector } from "react-redux";
 import usePagination from "@mui/material/usePagination/usePagination";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../Redux/Slices/authSlice";
 
 
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const menuItems = [
         { name: "Home", icon: <Home sx={{fontSize:32}}/> },
         { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:32}}/> },
@@ -19,12 +22,13 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
         { name: "Profile", icon: <Person sx={{fontSize:32}}/> },
     ];
 
-    const userProfile = useSelector((state) => state.auth.userProfile);
-    console.log(userProfile, "UserProfile at Sidebar COMP");
+    const { user, loading: isLoading } = useSelector((state) => state.auth);
+    console.log(user, "user at Sidebar COMP");
     const handleLogout = () => {
         dispatch(logout());
         // Optional: Redirect the user to the login page
-        window.location.href = "/login";
+        // window.location.href = "/login";
+        navigate("/");
     };
 
 
@@ -67,8 +71,8 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             }}
                         />
                         <div className="ml-3">
-                            <p className="text-white text-base font-semibold">{userProfile?.name || "Guest"}</p>
-                            <p className="text-gray-400 text-sm">{userProfile?.email || "No email provided"}</p>
+                            <p className="text-white text-base font-semibold">{user?.name || "Guest"}</p>
+                            <p className="text-gray-400 text-sm">{user?.email || "No email provided"}</p>
                         </div>
                     </div>
 

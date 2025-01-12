@@ -7,7 +7,7 @@ const DisplayPosts = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await api.get('/api/v1/posts/core/users/1/allPosts');
+                const response = await api.get('/api/v1/posts/core/users/7/allPosts');
                 if (response.data && Array.isArray(response.data.data)) {
                     setPosts(response.data.data);
                 }

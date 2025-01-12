@@ -12,38 +12,34 @@ import { fetchInstitutes } from "../../Redux/Slices/Institute/fethInstituteSlice
 const Dashboard = () => {
 
   const [activeSection, setActiveSection] = useState("Home"); // Default section
-  const userProfile = useSelector((state) => state.auth);
+  const { user, loading: isLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isProfileComplete, setIsProfileComplete] = useState(false);
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
-      // Wait for the fetchUserProfile action to complete
-      const userProfileData = await dispatch(fetchUserProfile());
-      console.log("User Profile: ", userProfileData.payload.data.isProfileComplete);
-      setIsProfileComplete(userProfileData.payload.data.isProfileComplete);
 
-      
-      // Wait for the fetchInstitutes action to complete
-      
+      dispatch(fetchUserProfile());
+
     };
 
     fetchData();
-  }, [dispatch],navigate);
+  }, [dispatch], navigate);
 
+  
+  console.log("User Profile: ",user)
   useEffect(() => {
-    if (!isProfileComplete) {
+    if (!isLoading && user && !user.isProfileComplete) {
       navigate("/complete-profile");
     }
-  }, [isProfileComplete, navigate]);
-
-  console.log("State: ",userProfile);
+  }, [isLoading, user, navigate]);
 
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 text-white overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-gray-950 text-white ">
       {/* Top Navbar for small screens */}
       <TopNavbar />
 
@@ -60,7 +56,7 @@ const Dashboard = () => {
         <RightSidebar />
       </div>
 
-      
+
 
       {/* Bottom Navbar for small screens */}
       <BottomNavbar activeSection={activeSection} setActiveSection={setActiveSection} />
