@@ -13,6 +13,7 @@ import { logout } from "../../Redux/Slices/authSlice";
 const Sidebar = ({ activeSection, setActiveSection }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user,userProfile, loading: isLoading } = useSelector((state) => state.auth);
     const menuItems = [
         { name: "Home", icon: <Home sx={{fontSize:32}}/> },
         { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:32}}/> },
@@ -22,7 +23,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
         { name: "Profile", icon: <Person sx={{fontSize:32}}/> },
     ];
 
-    const { user, loading: isLoading } = useSelector((state) => state.auth);
+    
     console.log(user, "user at Sidebar COMP");
     const handleLogout = () => {
         dispatch(logout());
@@ -62,7 +63,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                     <div className="flex items-center">
                         <Avatar
                             alt="Gaurav Pisal"
-                            src="/path-to-avatar.jpg" // Replace with your avatar image URL
+                            src={userProfile?.profilePicUrl} // Replace with your avatar image URL
                             sx={{
                                 width: 40,
                                 height: 40,

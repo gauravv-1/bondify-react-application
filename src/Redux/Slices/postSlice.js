@@ -64,10 +64,11 @@ export const createPost = createAsyncThunk(
 
 export const fetchPosts = createAsyncThunk(
     "post/fetchPosts",
-    async (_, { rejectWithValue }) => {
+    async (userId, { rejectWithValue }) => {
       try {
-        const response = await api.get("/api/v1/posts/core/users/allPosts");
-        console.log(response.data.data, "post data res");
+        console.log("At fetchPosts Thunk.. Featching posts for userId: ",userId);
+        const response = await api.get(`/api/v1/posts/core/users/${userId}/allPosts`);
+        console.log("Post data res from fetchPosts at Thunk: ",response.data.data);
         return response.data.data; // Return posts data
       } catch (error) {
         return rejectWithValue(

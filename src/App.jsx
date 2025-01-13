@@ -5,6 +5,7 @@ import Signup from './pages/Signup/Signup';
 import Dashboard from './pages/Dashboard/Dashboard';
 import CompleteProfile from './components/Profile/CompleteProfile';
 import { ToastContainer } from 'react-toastify/unstyled';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
         </Routes>
       </Router>
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchInstitutes } from "../../Redux/Slices/Institute/fethInstituteSlice";
-import { completeUserProfile } from "../../Redux/Slices/authSlice";
+
+import { completeUserProfile, fetchUserProfile } from "../../Redux/Slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { fetchInstitutes } from "../../Redux/Slices/Institute/fethInstituteSlice";
 
 const CompleteProfile = () => {
   const dispatch = useDispatch();

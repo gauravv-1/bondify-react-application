@@ -6,15 +6,15 @@ import { Avatar } from "@mui/material";
 import { fetchPosts } from "../../Redux/Slices/postSlice"; // Redux action to fetch posts
 import CreatePost from "./CreatePost";
 
-const PostPage = () => {
+const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.post);
-  const { user, loading: isLoading } = useSelector((state) => state.auth);
-
+  const { user, userProfile, loading: isLoading } = useSelector((state) => state.auth);
+  console.log("Uswr Id:- ", user.id);
   // Fetch user posts on component mount
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchPosts(`${requestedUserUserId ? requestedUserUserId : user.id}`));
   }, [dispatch]);
 
   const handleOpenModal = () => setModalOpen(true);
@@ -25,7 +25,7 @@ const PostPage = () => {
       <div className="max-w-3xl mx-auto p-4 relative">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Your Posts</h1>
+          <h1 className="text-2xl font-bold">{requestedUserProfile ? "Users Post" : "Your Posts"}</h1>
         </div>
 
         {/* Posts Section */}
@@ -39,9 +39,9 @@ const PostPage = () => {
               <div key={post.id} className="bg-gray-900 rounded-lg p-4 shadow-md">
                 {/* Post Header */}
                 <div className="flex items-center space-x-4 mb-4">
-                  <Avatar>{user?.name[0]}</Avatar>
+                  <Avatar src={requestedUserProfile ? requestedUserProfile.userProfiledDto.profilePicUrl : userProfile?.profilePicUrl} />
                   <div>
-                    <h3 className="font-semibold">{user?.name}</h3>
+                    <h3 className="font-semibold">{requestedUserProfile ? requestedUserProfile.name : user?.name}</h3>
                     <p className="text-gray-400 text-sm">
                       {new Date(post.createdAt).toLocaleString()}
                     </p>
@@ -78,15 +78,18 @@ const PostPage = () => {
             </div>
           </div>
         )}
-        
+
         {/* Floating Create Post Button */}
-        <button
-          onClick={handleOpenModal}
-          className="absolute bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
-          style={{ position: 'fixed', bottom: '6rem', right: '2rem' }} // Fixed position with respect to the screen
-        >
-          <AddCircleIcon fontSize="large" />
-        </button>
+
+        {!requestedUserProfile &&
+          <button
+            onClick={handleOpenModal}
+            className="absolute bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
+            style={{ position: 'fixed', bottom: '6rem', right: '2rem' }} // Fixed position with respect to the screen
+          >
+            <AddCircleIcon fontSize="large" />
+          </button>
+        }
       </div>
     </div>
   );

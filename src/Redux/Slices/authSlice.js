@@ -81,7 +81,9 @@ const authSlice = createSlice({
     loading: false, // Loading state for API calls
     error: null, // Stores error messages
     successMessage: null, // Stores success messages
-    isProfileComplete: false
+    isProfileComplete: false,
+    userProfile: null, // Stores userProfiledDto details
+    institute: null, // Stores instituteDto details
   },
   reducers: {
     logout: (state) => {
@@ -137,6 +139,8 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.data;
         state.isProfileComplete = action.payload.data.isProfileComplete;
+        state.userProfile = action.payload.data.userProfiledDto || null;
+        state.institute = action.payload.data.userProfiledDto?.instituteDto || null;
         state.error = null;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
