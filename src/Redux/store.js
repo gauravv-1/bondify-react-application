@@ -4,6 +4,7 @@ import instituteReducer from "./Slices/Institute/fethInstituteSlice";
 import postReducer from "./Slices/postSlice"
 import searchReducer from "./Slices/Search/searchSlice"
 import profileReducer from "./Slices/Profile/profileSlice";
+import feedReducer from './Slices/Feed/feedSlice';
 
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     institute: instituteReducer,
     post: postReducer,
     search: searchReducer,
-    profile: profileReducer
+    profile: profileReducer,
+    feed: feedReducer,
    }
 })

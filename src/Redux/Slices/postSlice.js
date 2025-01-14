@@ -6,6 +6,7 @@ export const uploadImage = createAsyncThunk(
   "post/uploadImage",
   async (file, { rejectWithValue }) => {
     try {
+
       const formData = new FormData();
       formData.append("file", file);
 
@@ -33,8 +34,9 @@ export const uploadImage = createAsyncThunk(
 // Thunk for creating a post
 export const createPost = createAsyncThunk(
   "post/createPost",
-  async ({ content, file }, { dispatch, rejectWithValue }) => {
+  async ({ content, file, userName, profilePicUrl }, { dispatch, rejectWithValue }) => {
     try {
+      console.log("createPost thunk triggered");
       let imageUrl = null;
 
       // Check if an image file is provided
@@ -47,6 +49,8 @@ export const createPost = createAsyncThunk(
       const postBody = {
         content,
         imageUrl: imageUrl ? [imageUrl] : [], // Add image URL to the post body if exists
+        profilePicUrl,
+        userName,
       };
 
       console.log("Post payload:", postBody);

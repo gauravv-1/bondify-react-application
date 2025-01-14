@@ -3,6 +3,7 @@ import DisplayPosts from "../DisplayPosts";
 import CreatePost from "../Post/CreatePost";
 import PostPage from "../Post/PostPage";
 import SearchPage from "../../pages/Search/SearchPage";
+import MyFeed from "../../pages/Feed/MyFeed";
 
 const MainContent = ({ section }) => {
   return (
@@ -14,6 +15,7 @@ const MainContent = ({ section }) => {
       {/* <DisplayPosts/> */}
       {section === 'Post' && <PostPage />} 
       {section === 'Search' && <SearchPage />} 
+      {section === 'Home' && <MyFeed />} 
       
     </div>
   );
