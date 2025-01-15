@@ -20,6 +20,7 @@ export const getConnectionStatus = createAsyncThunk(
   "user/getConnectionStatus",
   async (userId, { rejectWithValue }) => {
     try {
+      console.log("attempting getConnectionStatus at Thunk..")
       const response = await api.post(`/api/v1/connections/core/${userId}/getConnectionStatus`);
       console.log("Requested Users Connection Data at getConnectionStatus Thunk ",response.data);
       return response.data;

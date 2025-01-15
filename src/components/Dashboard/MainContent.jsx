@@ -4,6 +4,7 @@ import CreatePost from "../Post/CreatePost";
 import PostPage from "../Post/PostPage";
 import SearchPage from "../../pages/Search/SearchPage";
 import MyFeed from "../../pages/Feed/MyFeed";
+import NotificationsPage from "../../pages/Notification/NotificationsPage";
 
 const MainContent = ({ section }) => {
   return (
@@ -16,6 +17,7 @@ const MainContent = ({ section }) => {
       {section === 'Post' && <PostPage />} 
       {section === 'Search' && <SearchPage />} 
       {section === 'Home' && <MyFeed />} 
+      {section === 'Notifications' && <NotificationsPage />} 
       
     </div>
   );

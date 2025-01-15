@@ -5,6 +5,7 @@ import postReducer from "./Slices/postSlice"
 import searchReducer from "./Slices/Search/searchSlice"
 import profileReducer from "./Slices/Profile/profileSlice";
 import feedReducer from './Slices/Feed/feedSlice';
+import notificationReducer from './Slices/Notification/notificationSlice';
 
 
 export const store = configureStore({
@@ -15,5 +16,6 @@ export const store = configureStore({
     search: searchReducer,
     profile: profileReducer,
     feed: feedReducer,
+    notifications: notificationReducer
    }
 })

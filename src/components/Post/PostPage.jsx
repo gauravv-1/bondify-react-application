@@ -12,14 +12,16 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
   const { posts, loading, error } = useSelector((state) => state.post);
   const { user, userProfile, loading: isLoading } = useSelector((state) => state.auth);
   console.log("Uswr Id:- ", user.id);
-  // Fetch user posts on component mount
-  useEffect(() => {
-    dispatch(fetchPosts(`${requestedUserUserId ? requestedUserUserId : user.id}`));
-  }, [dispatch]);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
+  // Fetch user posts on component mount
+  useEffect(() => {
+    dispatch(fetchPosts(`${requestedUserUserId ? requestedUserUserId : user.id}`));
+  }, [dispatch],handleCloseModal);
+
+  
   return (
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
