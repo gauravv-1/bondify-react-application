@@ -42,6 +42,19 @@ export const sendConnectionRequest = createAsyncThunk(
   }
 );
 
+export const acceptConnectionRequest = createAsyncThunk(
+  "user/acceptConnectionRequest",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/api/v1/connections/core/accept/${userId}`);
+      console.log("Accepted Connection Request: ", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Failed to accept connection request.");
+    }
+  }
+);
+
 // Slice Definition
 const profileSlice = createSlice({
   name: "profile",
@@ -80,6 +93,9 @@ const profileSlice = createSlice({
       })
       .addCase(sendConnectionRequest.fulfilled, (state, action) => {
         state.connectionStatus = { ...state.connectionStatus, isRequested: true };
+      })
+      .addCase(acceptConnectionRequest.fulfilled, (state, action) => {
+        state.connectionStatus = { ...state.connectionStatus, isConnected: true };
       });
   },
 });

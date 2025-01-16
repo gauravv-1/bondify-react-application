@@ -22,20 +22,14 @@ const NotificationsPage = () => {
         }
     }, [dispatch, userId]);
 
-    useEffect(() => {
-        if (notifications.length > 0) {
-            notifications.forEach((notification) => {
-                dispatch(getConnectionStatus(notification.userId));
-            });
-        }
-    }, [notifications, dispatch]);
+    
     
 
     if (loading) return <div className="text-center mt-10">Loading...</div>;
     if (error) return <div className="text-center mt-10 text-red-500">Error: {error}</div>;
 
     return (
-        <div className="p-4 max-w-2xl mx-auto">
+        <div className="min-h-screen p-4 max-w-2xl mx-auto">
             <h1 className="text-2xl font-bold mb-4">Notifications</h1>
             <div className="space-y-4">
                 {notifications.map((notification) => (
