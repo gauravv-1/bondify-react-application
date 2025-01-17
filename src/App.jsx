@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import CompleteProfile from './components/Profile/CompleteProfile';
 import { ToastContainer } from 'react-toastify/unstyled';
 import ProfilePage from './pages/Profile/ProfilePage';
+import Auth from './pages/Auth/Auth';
 
 
 const App = () => {

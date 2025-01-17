@@ -23,14 +23,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
         { name: "Profile", icon: <Person sx={{fontSize:32}}/> },
     ];
 
-    
-    console.log(user, "user at Sidebar COMP");
-    const handleLogout = () => {
-        dispatch(logout());
-        // Optional: Redirect the user to the login page
-        // window.location.href = "/login";
-        navigate("/");
-    };
+
 
 
     return (
@@ -71,7 +64,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                                 color: "white",
                             }}
                         />
-                        <div className="ml-3">
+                        <div className="ml-3 cursor-pointer" onClick={()=>{setActiveSection('Profile')}}>
                             <p className="text-white text-base font-semibold">{user?.name || "Guest"}</p>
                             <p className="text-gray-400 text-sm">{user?.email || "No email provided"}</p>
                         </div>
@@ -94,11 +87,6 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                             />
                         </svg>
                     </div>
-
-                    <button
-                        onClick={handleLogout}
-                        className="logout-button bg-red-500 text-white px-4 py-2 rounded-md"
-                    >Logout</button>
                 </div>
             </div>
 

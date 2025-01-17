@@ -70,9 +70,9 @@ export const fetchPosts = createAsyncThunk(
     "post/fetchPosts",
     async (userId, { rejectWithValue }) => {
       try {
-        console.log("At fetchPosts Thunk.. Featching posts for userId: ",userId);
+        // console.log("At fetchPosts Thunk.. Featching posts for userId: ",userId);
         const response = await api.get(`/api/v1/posts/core/users/${userId}/allPosts`);
-        console.log("Post data res from fetchPosts at Thunk: ",response.data.data);
+        // console.log("Post data from fetchPosts at Thunk: ",response.data.data);
         return response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         
       } catch (error) {

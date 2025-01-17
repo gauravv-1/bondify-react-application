@@ -20,6 +20,10 @@ const MyFeed = () => {
     dispatch(refreshPosts());
   };
 
+  const handleFetchOldPosts = () => {
+    dispatch(refreshPosts());
+  };
+
   useEffect(() => {
     if (posts.length > 0) {
       const postIds = posts.map((post) => post.id); // Collect all post IDs
@@ -31,9 +35,9 @@ const MyFeed = () => {
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        {/* <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Feed</h1>
-        </div>
+        </div> */}
 
         {/* Refresh Button */}
         {showRefreshButton && (
@@ -58,7 +62,7 @@ const MyFeed = () => {
             <p className="mt-4">You've gone through all posts! Check older posts.</p>
             <button
               className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
-              onClick={() => dispatch(fetchInitialPosts())}
+              onClick={handleFetchOldPosts}
             >
               Load Older Posts
             </button>

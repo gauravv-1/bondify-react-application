@@ -7,7 +7,7 @@ export const getRequestedUsersProfile = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await api.post(`/api/v1/users/auth/${userId}/getRequestedUsersProfile`);
-      console.log("Requested Users Data at getRequestedUsersProfile Thunk ",response.data);
+      // console.log("Requested Users Data at getRequestedUsersProfile Thunk ",response.data);
       return response.data;
       
     } catch (error) {
@@ -20,9 +20,9 @@ export const getConnectionStatus = createAsyncThunk(
   "user/getConnectionStatus",
   async (userId, { rejectWithValue }) => {
     try {
-      console.log("attempting getConnectionStatus at Thunk..")
+      // console.log("attempting getConnectionStatus at Thunk..")
       const response = await api.post(`/api/v1/connections/core/${userId}/getConnectionStatus`);
-      console.log("Requested Users Connection Data at getConnectionStatus Thunk ",response.data);
+      // console.log("Requested Users Connection Data at getConnectionStatus Thunk ",response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || "Failed to fetch connection status.");

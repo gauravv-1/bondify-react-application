@@ -1,25 +1,37 @@
 import React from "react";
-import { Notifications, Message } from "@mui/icons-material";
-import AppLogo from './../../assets/logos/AppLogo.png'
-import AppLogo2 from './../../assets/logos/AppLogo2.png'
-import AppLogo3 from './../../assets/logos/AppLogo3.png'
+import { Notifications, Message, Search } from "@mui/icons-material";
+// import AppLogo from './../../assets/logos/AppLogo.png'
+// import AppLogo2 from './../../assets/logos/AppLogo2.png'
+// import AppLogo3 from './../../assets/logos/AppLogo3.png'
 import AppLogo4 from './../../assets/logos/AppLogo4.png'
 import AppLogo5 from './../../assets/logos/AppLogo5.png'
 import AppLogo6 from './../../assets/logos/AppLogo6.png'
-const TopNavbar = () => {
+const TopNavbar = ({ activeSection, setActiveSection }) => {
+  const menuItems = [
+    { name: "Notifications", icon: <Notifications className="text-white" sx={{fontSize:30,color: activeSection === "Notifications" ? 'orange' : 'white'}}/> },
+    { name: "Search", icon: <Search className="text-white"  sx={{fontSize:30,color: activeSection === "Search" ? 'orange' : 'white'}}/> },
+    // { name: "Messages", icon: <Message sx={{fontSize:30}}/> },
+    // { name: "Profile", icon: <Person sx={{fontSize:30}}/> },
+  ];
+
   return (
     <div className="z-50 md:hidden flex justify-between items-center bg-gray-950 p-4 sticky top-0">
       {/* App Logo */}
-      <img src={AppLogo6} width='200px' alt="" />
+      <img src={AppLogo4} width='200px' alt="" />
 
       {/* Notifications and Messages */}
       <div className="flex space-x-4">
-        <button>
-          <Notifications className="text-white" />
+      {menuItems.map((item) => (
+        <button
+          key={item.name}
+          onClick={() => setActiveSection(item.name)}
+          className={`text-white${
+            activeSection === item.name ? "text-blue-400" : "text-gray-400"
+          }`}
+        >
+          {item.icon}
         </button>
-        <button>
-          <Message className="text-white" />
-        </button>
+      ))}
       </div>
     </div>
   );

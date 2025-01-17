@@ -6,8 +6,8 @@ import MainContent from "../../components/Dashboard/MainContent";
 import BottomNavbar from "../../components/Dashboard/BottomNavbar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../../Redux/Slices/authSlice";
-import { Outlet, useNavigate } from "react-router-dom";
-import { fetchInstitutes } from "../../Redux/Slices/Institute/fethInstituteSlice";
+import { useNavigate } from "react-router-dom";
+
 
 const Dashboard = () => {
 
@@ -29,7 +29,6 @@ const Dashboard = () => {
   }, [dispatch], navigate);
 
   
-  console.log("User Profile: ",user)
   useEffect(() => {
     if (!isLoading && user && !user.isProfileComplete) {
       navigate("/complete-profile");
@@ -41,7 +40,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-950 text-white ">
       {/* Top Navbar for small screens */}
-      <TopNavbar />
+      <TopNavbar activeSection={activeSection} setActiveSection={setActiveSection}/>
 
       <div className="flex flex-1">
         {/* Left Sidebar */}
@@ -54,9 +53,8 @@ const Dashboard = () => {
 
         {/* Right Sidebar */}
         <RightSidebar />
+
       </div>
-
-
 
       {/* Bottom Navbar for small screens */}
       <BottomNavbar activeSection={activeSection} setActiveSection={setActiveSection} />

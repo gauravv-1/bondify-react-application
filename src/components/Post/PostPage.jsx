@@ -11,7 +11,7 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.post);
   const { user, userProfile, loading: isLoading } = useSelector((state) => state.auth);
-  console.log("Uswr Id:- ", user.id);
+  // console.log("User Id:- ", user.id);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -26,9 +26,15 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">{requestedUserProfile ? "Users Post" : "Your Posts"}</h1>
+        {requestedUserProfile &&
+        (
+          <div className="flex justify-between items-center text-2xl font-bold p-3 border-b-2 border-b-gray-800 mb-6">
+          <h1 className="text-xl font-bold">{requestedUserProfile ? "Users Post" : "Your Posts"}</h1>
         </div>
+        )
+
+        }
+        
 
         {/* Posts Section */}
         {loading ? (
