@@ -15,9 +15,16 @@ import { getConnectionStatus, getRequestedUsersProfile, sendConnectionRequest } 
 import { fetchPosts } from "../../Redux/Slices/postSlice";
 import PostPage from "../../components/Post/PostPage";
 import { logout } from "../../Redux/Slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProfilePage = ({ userId, onBack, userProfile }) => {
+    const { userProfileId } = useParams(); 
+    
+    console.log("User Id: ",userProfileId);
+
+    if(userProfileId){
+        userId = userProfileId;
+    }
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { profile, connectionStatus, loading, error } = useSelector(

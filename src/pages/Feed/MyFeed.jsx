@@ -1,14 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FeedIcon from '@mui/icons-material/RssFeed';
-import { checkForNewPosts, fetchInitialPosts, markPostsAsSeen, refreshPosts } from '../../Redux/Slices/Feed/feedSlice';
-
+import {
+  checkForNewPosts,
+  fetchInitialPosts,
+  fetchSeenPosts,
+  markPostsAsSeen,
+  refreshPosts,
+} from '../../Redux/Slices/Feed/feedSlice';
 
 const MyFeed = () => {
   const dispatch = useDispatch();
-  const { posts, newPosts, loading, error, showRefreshButton } = useSelector((state) => state.feed);
+  const { posts, loading, error, showRefreshButton, hasMore } = useSelector((state) => state.feed);
+  const observerRef = useRef(null);
+  const pageRef = useRef(0);
 
   useEffect(() => {
     dispatch(fetchInitialPosts());
@@ -20,25 +27,56 @@ const MyFeed = () => {
     dispatch(refreshPosts());
   };
 
-  const handleFetchOldPosts = () => {
-    dispatch(refreshPosts());
+  const loadMorePosts = () => {
+    if (!loading && hasMore) {
+      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10 }));
+      pageRef.current += 1; // Increment page after fetching
+    }
+  };
+
+  const handleFetchOlderPosts = () => {
+    if (!loading && hasMore) {
+      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10 }));
+      pageRef.current += 1;
+    }
   };
 
   useEffect(() => {
+    const observerCallback = (entries) => {
+      const [entry] = entries;
+      if (entry.isIntersecting) {
+        loadMorePosts();
+      }
+    };
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 1.0,
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) observer.unobserve(observerRef.current);
+    };
+  }, [loading, hasMore]);
+
+  useEffect(() => {
     if (posts.length > 0) {
-      const postIds = posts.map((post) => post.id); // Collect all post IDs
-      dispatch(markPostsAsSeen(postIds)); // Dispatch markPostsAsSeen with post IDs
+      const unseenPostIds = posts.filter((post) => !post.seen).map((post) => post.id);
+      if (unseenPostIds.length > 0) {
+        dispatch(markPostsAsSeen(unseenPostIds));
+      }
     }
   }, [posts, dispatch]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
-        {/* Header */}
-        {/* <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Feed</h1>
-        </div> */}
-
         {/* Refresh Button */}
         {showRefreshButton && (
           <div
@@ -52,21 +90,29 @@ const MyFeed = () => {
         )}
 
         {/* Posts Section */}
-        {loading ? (
+        {loading && posts.length === 0 ? (
           <p>Loading posts...</p>
         ) : error ? (
           <p className="text-red-500">Failed to fetch posts: {error}</p>
-        ) : posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
-            <FeedIcon style={{ fontSize: '4rem' }} />
-            <p className="mt-4">You've gone through all posts! Check older posts.</p>
-            <button
-              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
-              onClick={handleFetchOldPosts}
-            >
-              Load Older Posts
-            </button>
-          </div>
+        ) : posts.length === 0 && !loading ? (
+          hasMore ? (
+            <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
+              <FeedIcon style={{ fontSize: '4rem' }} />
+              <p className="mt-4">You've seen all current posts! Check older posts.</p>
+              <button
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={handleFetchOlderPosts}
+              >
+                Load Older Posts
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
+              <FeedIcon style={{ fontSize: '4rem' }} />
+              <p className="mt-4">No more posts available.</p>
+              
+            </div>
+          )
         ) : (
           <div className="space-y-6">
             {posts.map((post) => (
@@ -88,6 +134,13 @@ const MyFeed = () => {
                 )}
               </div>
             ))}
+
+            {/* Loader for infinite scrolling */}
+            {hasMore && (
+              <div ref={observerRef} className="text-center text-gray-500">
+                Loading more posts...
+              </div>
+            )}
           </div>
         )}
       </div>

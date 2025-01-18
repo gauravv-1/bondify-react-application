@@ -5,7 +5,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import MUI I
 import { Link, useNavigate } from "react-router-dom";
 import AppLogo from './../../assets/logos/AppLogo.png'
 import AppLogo2 from './../../assets/logos/AppLogo2.png'
-import AppLogo3 from './../../assets/logos/AppLogo3.png'
+import { toast } from "react-toastify/unstyled";
+
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ const Login = () => {
             // Fetch the user profile
             // const userProfile = await dispatch(fetchUserProfile(token)).unwrap();
             
-                
+                toast.success('Login successful!');
                 navigate("/dashboard"); 
             
         }

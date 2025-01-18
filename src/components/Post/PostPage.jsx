@@ -74,8 +74,8 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
 
         {/* CreatePost Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="relative bg-gray-900 p-6 rounded-lg shadow-lg max-w-lg w-full">
+          <div className="fixed m-6 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="relative bg-gray-900 p-4 rounded-lg shadow-lg max-w-lg w-full">
               <button
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
                 onClick={handleCloseModal}

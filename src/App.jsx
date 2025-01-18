@@ -13,15 +13,24 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer />
-
+      <ToastContainer 
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
-          <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/profile/:userProfileId" element={<ProfilePage />} />
         </Routes>
       </Router>
 

@@ -4,7 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Avatar } from "@mui/material";
 import { fetchSearchResults } from "../../Redux/Slices/Search/searchSlice";
 import ProfilePage from "../Profile/ProfilePage";
-
+import { HelpOutline } from "@mui/icons-material"; // Icon for no results
 
 const SearchPage = () => {
   const [selectedUserId, setSelectedUserId] = useState(null); // Track selected user
@@ -60,12 +60,17 @@ const SearchPage = () => {
               <p>Loading results...</p>
             ) : error ? (
               <p className="text-red-500">Error: {error}</p>
+            ) : results.length === 0 ? (
+              <div className="flex items-center space-x-2 text-gray-400">
+                <HelpOutline />
+                <p>No search results found</p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {results.map((user) => (
                   <div
                     key={user.userId}
-                    className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center space-x-4 hover:bg-gray-700 cursor-pointer"
+                    className="bg-gray-850 rounded-lg p-4 flex items-center space-x-4 hover:bg-gray-800 cursor-pointer"
                     onClick={() => handleUserClick(user.userId)} // Handle user click
                   >
                     {/* User Avatar */}

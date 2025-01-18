@@ -22,12 +22,28 @@ export const checkForNewPosts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/api/v1/posts/core/feed/getUnseenPosts?page=0&size=10");
-      return response.data.data;
+      return response.data.data.data;
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);
     }
   }
 );
+
+//Fetch seen posts
+export const fetchSeenPosts = createAsyncThunk(
+  "feed/fetchSeenPosts",
+  async ({ page, size }, { rejectWithValue }) => {
+    try {
+      console.log("At Thunk fetchSeenPosts")
+      const response = await api.get(`/api/v1/posts/core/feed/getSeenPosts`, { params: { page, size } });
+      console.log("Response data at thunk of fetchSeenPosts: ",response.data.data);
+      return response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (error) {
+      return rejectWithValue(error.response.data || "Something went wrong");
+    }
+  }
+);
+
 
 // Mark posts as seen
 export const markPostsAsSeen = createAsyncThunk(
@@ -49,6 +65,8 @@ const feedSlice = createSlice({
     posts: [],
     newPosts: [],
     seenPosts: [],
+    page: 0, // Pagination page number
+    hasMore: true, // To track if more posts are available
     loading: false,
     error: null,
     showRefreshButton: false,
@@ -87,6 +105,22 @@ const feedSlice = createSlice({
       })
       .addCase(checkForNewPosts.rejected, (state, action) => {
         state.error = action.payload || "Failed to check for new posts";
+      })
+      //Handle ftechSeenPosts
+      .addCase(fetchSeenPosts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSeenPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = [...state.posts, ...action.payload];
+        state.page += 1;
+        if (action.payload.length === 0) {
+          state.hasMore = false; // No more posts to fetch
+        }
+      })
+      .addCase(fetchSeenPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       // Handle markPostsAsSeen
       .addCase(markPostsAsSeen.fulfilled, (state, action) => {

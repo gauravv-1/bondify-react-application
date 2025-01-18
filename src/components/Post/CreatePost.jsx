@@ -4,10 +4,9 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SendIcon from "@mui/icons-material/Send";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Avatar } from "@mui/material";
 import { createPost } from "../../Redux/Slices/postSlice";
+import { toast } from "react-toastify/unstyled";
 
 const CreatePost = () => {
     const [content, setContent] = useState("");
@@ -33,9 +32,7 @@ const CreatePost = () => {
 
     const handlePost = async () => {
         if (!content.trim() && !file) {
-            toast.error("Content or image is required!", {
-                position: "top-right",
-            });
+            
             return;
 
         }
@@ -44,30 +41,42 @@ const CreatePost = () => {
             console.log("Dispatching createPost");
             await dispatch(createPost({ content, file, userName, profilePicUrl })).unwrap();
             console.log("Post dispatched successfully");
-            toast.success("Post created successfully!", {
-                position: "top-right",
-            });
-
+            toast.success('Post Created successful!');
             // Reset form fields
             setContent("");
             setFile(null);
             setPreview(null);
+
         } catch (err) {
-            toast.error("Failed to create post. Please try again.", {
-                position: "top-right",
-            });
             console.error("Error in handlePost:", err);
         }
     };
 
     return (
-        <div className="p-4 bg-gray-900 text-white rounded-xl shadow-md max-w-lg mx-auto my-8">
+        <div className="p-2 bg-gray-900 text-white rounded-xl max-w-lg mx-auto">
+            {/* User Avatar  */}
+            <div className="flex items-center justify-between mb-4">
+                {/* Avatar and User Info */}
+                <div className="flex items-center">
+                    <Avatar
+                        alt="Gaurav Pisal"
+                        src={userProfile?.profilePicUrl} // Replace with your avatar image URL
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            bgcolor: "#1E40AF", // Fallback background color
+                            color: "white",
+                        }}
+                    />
+                    <div className="ml-3 cursor-pointer" onClick={() => { setActiveSection('Profile') }}>
+                        <p className="text-white text-base font-semibold">{user?.name || "Guest"}</p>
+                        <p className="text-gray-400 text-sm">{user?.email || "No email provided"}</p>
+                    </div>
+                </div>
+            </div>
             {/* <p>Create Post</p>   */}
             <div className="flex items-start space-x-4">
-                {/* User Avatar */}
-                {/* <div className=""> 
-                    <Avatar>A</Avatar>
-                </div> */}
+
 
                 {/* Post Content */}
 
@@ -77,7 +86,7 @@ const CreatePost = () => {
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="What is happening?!"
                         className="w-full bg-gray-800 text-white border-none rounded-lg p-3 focus:ring-2 focus:ring-blue-500 placeholder-gray-400 resize-none"
-                        rows={6}
+                        rows={7}
                     />
 
                     {/* Image Preview */}
