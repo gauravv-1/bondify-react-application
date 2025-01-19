@@ -3,20 +3,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { acceptConnectionRequest, getConnectionStatus } from "../../Redux/Slices/Profile/profileSlice";
 import { Avatar, Button } from "@mui/material";
 import moment from "moment/moment";
-import ProfilePage from "../Profile/ProfilePage";
+import { CheckCircle, ConnectWithoutContact } from "@mui/icons-material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const NotificationCard = ({ notification, onProfileView }) => {
-    const { userName, message, createdAt, senderId, eventType: initialEventType } = notification;
+const NotificationCard = ({ notification, onProfileView, connectionStatus }) => {
+    console.log("Notification Whole: -",notification);
+    const { userName, message, createdAt, senderId, eventType: initialEventType, userProfileUrl } = notification;
     const [eventType, setEventType] = useState(initialEventType); // Local state for UI updates
+    // const [connectionStatus, setConnectionStatus] = useState(null);
     const dispatch = useDispatch();
-    const connectionStatus = useSelector((state) => state.profile.connectionStatus); // Individual connection status
+    // const connectionStatus = useSelector((state) => state.profile.connectionStatus);
+    console.log("Connection status for userName: -", senderId, " ", connectionStatus, "eventType:- ", eventType, "userProfileUrl: ",userProfileUrl);
 
-    useEffect(() => {
-        // Fetch connection status when component mounts
-        if (senderId) {
-            dispatch(getConnectionStatus(senderId));
-        }
-    }, [senderId, dispatch]);
+
+
+    // useEffect(() => {
+    //     // Fetch connection status when component mounts
+    //     if (senderId) {
+    //         dispatch(getConnectionStatus(senderId));
+    //     }
+    // }, [senderId, dispatch]);
 
     const handleAcceptRequest = async () => {
         try {
@@ -34,29 +40,45 @@ const NotificationCard = ({ notification, onProfileView }) => {
     };
 
     const renderActionButton = () => {
-        if (eventType === "SEND_CONNECTION" && !connectionStatus?.isConnected) {
+        // Logic for rendering the button or status based on eventType and connectionStatus
+        if (eventType === "SEND_CONNECTION" && connectionStatus && !connectionStatus?.isConnected) {
             return (
-                <Button
-                    variant="contained"
+
+                <Button variant="outlined"
                     size="small"
+                    className="text-orange-400"
+                    sx={{color:"orange", borderColor:"orange"}}
                     onClick={handleAcceptRequest}
-                    className="bg-blue-500 hover:bg-blue-600 text-white"
-                >
+                    startIcon={<CheckCircle />}>
                     Accept
                 </Button>
+                // <Button
+                //     variant="contained"
+                //     size="small"
+                //     o
+                //     className="bg-blue-500 hover:bg-blue-600 text-white"
+                // >
+                //     {/* <CheckCircle sx={{marginRight:"5px",fontSize:"20px"}}/>  */}
+                //     Accept
+                // </Button>
             );
-        } else if (connectionStatus?.isConnected) {
-            return <span className="text-green-600 font-semibold">Connected</span>;
-        } else if (eventType === "POST_EVENT") {
-            return null; // No button or action for POST_EVENT
+        } else if (connectionStatus && connectionStatus?.isConnected) {
+            return <span className="text-green-600 font-semibold"><ConnectWithoutContact sx={{ fontSize: 30 }} /></span>;
         }
+        // No action for other event types or conditions
+        return null;
     };
 
     return (
         <div className="flex items-center justify-between p-2 bg-gray-900 shadow rounded-lg border-b-2 border-b-gray-800 sm:p-4">
             {/* User Info Section */}
             <div className="flex items-center">
-                <Avatar className="mr-4">{userName ? userName[0] : "A"}</Avatar>
+                <Avatar
+                src={userProfileUrl}
+                 className="mr-4"
+                 alt={userName ? userName[0] : "A"}
+                 />
+                    
                 <div>
                     <h3
                         onClick={handleUserClick}

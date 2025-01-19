@@ -10,7 +10,7 @@ export const fetchNotifications = createAsyncThunk(
       const response = await api.get(
         `/api/v1/notifications/core/getNotificationsByUserId/${userId}`
       );
-      // console.log("Response Data at fetchNotifications thunk ",response.data);
+      console.log("Response Data at fetchNotifications thunk ",response.data);
       return response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
        
     } catch (error) {

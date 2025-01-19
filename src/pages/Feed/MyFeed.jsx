@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -10,14 +10,18 @@ import {
   markPostsAsSeen,
   refreshPosts,
 } from '../../Redux/Slices/Feed/feedSlice';
+import { toast } from 'react-toastify';
+import ProfilePage from '../Profile/ProfilePage';
 
 const MyFeed = () => {
   const dispatch = useDispatch();
+  const [selectedUserId, setSelectedUserId] = useState(null);
   const { posts, loading, error, showRefreshButton, hasMore } = useSelector((state) => state.feed);
   const observerRef = useRef(null);
   const pageRef = useRef(0);
 
   useEffect(() => {
+    toast.success('Welcome to Feed!');
     dispatch(fetchInitialPosts());
     const interval = setInterval(() => dispatch(checkForNewPosts()), 30000); // Check every 30 seconds
     return () => clearInterval(interval);
@@ -74,6 +78,21 @@ const MyFeed = () => {
     }
   }, [posts, dispatch]);
 
+  const handleUserProfileClick = (userId) => {
+    console.log("User Id selected at handleUserProfileClick: ")
+    setSelectedUserId(userId);
+
+  }
+
+  const handleBackToFeed = () => {
+    setSelectedUserId(null);
+  }
+
+  // If a user is selected, render only the ProfilePage
+  if (selectedUserId) {
+    return <ProfilePage userId={selectedUserId} onBack={handleBackToFeed} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
@@ -110,7 +129,7 @@ const MyFeed = () => {
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
               <FeedIcon style={{ fontSize: '4rem' }} />
               <p className="mt-4">No more posts available.</p>
-              
+
             </div>
           )
         ) : (
@@ -120,7 +139,7 @@ const MyFeed = () => {
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar src={post?.profilePicUrl} />
                   <div>
-                    <h3 className="font-semibold">{post.userName}</h3>
+                    <h3 onClick={()=>{handleUserProfileClick(post.userId)}} className="font-semibold cursor-pointer">{post.userName}</h3>
                     <p className="text-gray-400 text-sm">{new Date(post.createdAt).toLocaleString()}</p>
                   </div>
                 </div>

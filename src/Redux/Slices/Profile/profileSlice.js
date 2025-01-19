@@ -30,6 +30,20 @@ export const getConnectionStatus = createAsyncThunk(
   }
 );
 
+export const fetchConnectionStatuses = createAsyncThunk(
+  "profile/fetchConnectionStatuses",
+  async (userIds, { rejectWithValue }) => {
+    try {
+
+      const response = await api.post("/api/v1/connections/core/getConnectionStatuses", userIds);
+      console.log("response at fetchConnectionStatuses thunk ",response.data.data)
+      return response.data.data; // Map of userId -> ConnectionStatusDto
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const sendConnectionRequest = createAsyncThunk(
   "user/sendConnectionRequest",
   async (userId, { rejectWithValue }) => {
@@ -60,6 +74,7 @@ const profileSlice = createSlice({
   name: "profile",
   initialState: {
     profile: null,
+    connectionStatuses: {},
     connectionStatus: null,
     loading: false,
     error: null,
@@ -90,6 +105,17 @@ const profileSlice = createSlice({
       .addCase(getConnectionStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchConnectionStatuses.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchConnectionStatuses.fulfilled, (state, action) => {
+        state.connectionStatuses = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchConnectionStatuses.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
       })
       .addCase(sendConnectionRequest.fulfilled, (state, action) => {
         state.connectionStatus = { ...state.connectionStatus, isRequested: true };

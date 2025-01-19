@@ -18,13 +18,7 @@ import { logout } from "../../Redux/Slices/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProfilePage = ({ userId, onBack, userProfile }) => {
-    const { userProfileId } = useParams(); 
     
-    console.log("User Id: ",userProfileId);
-
-    if(userProfileId){
-        userId = userProfileId;
-    }
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { profile, connectionStatus, loading, error } = useSelector(

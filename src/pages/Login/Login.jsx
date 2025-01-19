@@ -5,7 +5,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import MUI I
 import { Link, useNavigate } from "react-router-dom";
 import AppLogo from './../../assets/logos/AppLogo.png'
 import AppLogo2 from './../../assets/logos/AppLogo2.png'
-import { toast } from "react-toastify/unstyled";
+import { toast } from "react-toastify";
 
 
 const Login = () => {

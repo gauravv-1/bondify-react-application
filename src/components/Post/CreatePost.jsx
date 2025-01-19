@@ -6,7 +6,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SendIcon from "@mui/icons-material/Send";
 import { Avatar } from "@mui/material";
 import { createPost } from "../../Redux/Slices/postSlice";
-import { toast } from "react-toastify/unstyled";
+import { toast } from "react-toastify";
 
 const CreatePost = () => {
     const [content, setContent] = useState("");
