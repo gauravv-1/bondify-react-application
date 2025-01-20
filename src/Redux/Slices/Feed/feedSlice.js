@@ -22,7 +22,7 @@ export const checkForNewPosts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/api/v1/posts/core/feed/getUnseenPosts?page=0&size=10");
-      return response.data.data.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);
     }
@@ -101,6 +101,7 @@ const feedSlice = createSlice({
       // Handle checkForNewPosts
       .addCase(checkForNewPosts.fulfilled, (state, action) => {
         state.newPosts = action.payload;
+        console.log("Handle checkForNewPosts: ",action.payload)
         state.showRefreshButton = action.payload.length > 0;
       })
       .addCase(checkForNewPosts.rejected, (state, action) => {

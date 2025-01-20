@@ -92,10 +92,10 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
         {!requestedUserProfile &&
           <button
             onClick={handleOpenModal}
-            className="absolute bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
+            className="absolute bottom-6 right-6 bg-orange-400 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
             style={{ position: 'fixed', bottom: '6rem', right: '2rem' }} // Fixed position with respect to the screen
           >
-            <AddCircleIcon fontSize="large" />
+            <AddCircleIcon fontSize="large"  />
           </button>
         }
       </div>

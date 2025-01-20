@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Avatar } from '@mui/material';
+import { Avatar, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FeedIcon from '@mui/icons-material/RssFeed';
 import {
@@ -12,6 +12,7 @@ import {
 } from '../../Redux/Slices/Feed/feedSlice';
 import { toast } from 'react-toastify';
 import ProfilePage from '../Profile/ProfilePage';
+import { Autorenew, CheckCircle } from '@mui/icons-material';
 
 const MyFeed = () => {
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const MyFeed = () => {
         {/* Refresh Button */}
         {showRefreshButton && (
           <div
-            className="fixed top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+            className="mt-6 fixed top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                        bg-blue-700 text-white py-2 px-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2"
             onClick={handleRefresh}
           >
@@ -118,12 +119,20 @@ const MyFeed = () => {
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
               <FeedIcon style={{ fontSize: '4rem' }} />
               <p className="mt-4">You've seen all current posts! Check older posts.</p>
-              <button
+              {/* <button
                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
                 onClick={handleFetchOlderPosts}
               >
                 Load Older Posts
-              </button>
+              </button> */}
+              <Button variant="outlined"
+                    size="medium"
+                    className="text-orange-400"
+                    sx={{color:"orange", borderColor:"orange", marginTop:"12px"}}
+                    onClick={handleFetchOlderPosts}
+                    startIcon={<Autorenew />}>
+                    Load Older Posts
+                </Button>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">

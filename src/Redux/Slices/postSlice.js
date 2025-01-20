@@ -57,6 +57,7 @@ export const createPost = createAsyncThunk(
 
       // API call to create a post
       const response = await api.post("/api/v1/posts/core", postBody);
+      console.log("Post created response: ",response.data);
       return response.data; // Return created post data
     } catch (error) {
       return rejectWithValue(
