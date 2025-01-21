@@ -14,27 +14,30 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
   // console.log("User Id:- ", user.id);
 
   const handleOpenModal = () => setModalOpen(true);
-  const handleCloseModal = () => setModalOpen(false);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    dispatch(fetchPosts(requestedUserUserId || user.id));
+  }
 
   // Fetch user posts on component mount
   useEffect(() => {
-    dispatch(fetchPosts(`${requestedUserUserId ? requestedUserUserId : user.id}`));
-  }, [dispatch],handleCloseModal);
+    dispatch(fetchPosts(requestedUserUserId || user.id));
+  }, [dispatch, requestedUserUserId, user.id]);
 
-  
+
   return (
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
         {/* Header */}
         {requestedUserProfile &&
-        (
-          <div className="flex justify-between items-center text-2xl font-bold p-3 border-b-2 border-b-gray-800 mb-6">
-          <h1 className="text-xl font-bold">{requestedUserProfile ? "Users Post" : "Your Posts"}</h1>
-        </div>
-        )
+          (
+            <div className="flex justify-between items-center text-2xl font-bold p-3 border-b-2 border-b-gray-800 mb-6">
+              <h1 className="text-xl font-bold">{requestedUserProfile ? "Users Post" : "Your Posts"}</h1>
+            </div>
+          )
 
         }
-        
+
 
         {/* Posts Section */}
         {loading ? (
@@ -95,7 +98,7 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
             className="absolute bottom-6 right-6 bg-orange-400 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
             style={{ position: 'fixed', bottom: '6rem', right: '2rem' }} // Fixed position with respect to the screen
           >
-            <AddCircleIcon fontSize="large"  />
+            <AddCircleIcon fontSize="large" />
           </button>
         }
       </div>

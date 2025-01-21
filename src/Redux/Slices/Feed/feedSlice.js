@@ -6,9 +6,9 @@ import api from "../../../services/api";
 // Fetch initial posts
 export const fetchInitialPosts = createAsyncThunk(
   "feed/fetchInitialPosts",
-  async (_, { rejectWithValue }) => {
+  async ({postType, page, size }, { rejectWithValue }) => {
     try {
-      const response = await api.get("/api/v1/posts/core/feed/getUnseenPosts?page=0&size=10");
+      const response = await api.get(`/api/v1/posts/core/feed/getUnseenPosts1?postType=${postType}&page=${page}&size=${size}`);
       return response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {
       return rejectWithValue(error.response ? error.response.data : error.message);
@@ -32,10 +32,10 @@ export const checkForNewPosts = createAsyncThunk(
 //Fetch seen posts
 export const fetchSeenPosts = createAsyncThunk(
   "feed/fetchSeenPosts",
-  async ({ page, size }, { rejectWithValue }) => {
+  async ({ page, size ,postType}, { rejectWithValue }) => {
     try {
       console.log("At Thunk fetchSeenPosts")
-      const response = await api.get(`/api/v1/posts/core/feed/getSeenPosts`, { params: { page, size } });
+      const response = await api.get(`/api/v1/posts/core/feed/getSeenPosts`, { params: { page, size, postType } });
       console.log("Response data at thunk of fetchSeenPosts: ",response.data.data);
       return response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {

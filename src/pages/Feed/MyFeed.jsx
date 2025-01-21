@@ -1,8 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Avatar, Button } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Box,
+  ToggleButtonGroup,
+  ToggleButton,
+} from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FeedIcon from '@mui/icons-material/RssFeed';
+import PublicIcon from "@mui/icons-material/Public";
+import SchoolIcon from "@mui/icons-material/School";
+import { Autorenew } from '@mui/icons-material';
 import {
   checkForNewPosts,
   fetchInitialPosts,
@@ -10,38 +23,36 @@ import {
   markPostsAsSeen,
   refreshPosts,
 } from '../../Redux/Slices/Feed/feedSlice';
-import { toast } from 'react-toastify';
 import ProfilePage from '../Profile/ProfilePage';
-import { Autorenew, CheckCircle } from '@mui/icons-material';
 
 const MyFeed = () => {
   const dispatch = useDispatch();
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [postType, setPostType] = useState('NORMAL');
   const { posts, loading, error, showRefreshButton, hasMore } = useSelector((state) => state.feed);
   const observerRef = useRef(null);
   const pageRef = useRef(0);
 
   useEffect(() => {
-    toast.success('Welcome to Feed!');
-    dispatch(fetchInitialPosts());
-    const interval = setInterval(() => dispatch(checkForNewPosts()), 30000); // Check every 30 seconds
+    dispatch(fetchInitialPosts({ postType, page: pageRef.current, size: 10 }));
+    const interval = setInterval(() => dispatch(checkForNewPosts()), 30000);
     return () => clearInterval(interval);
-  }, [dispatch]);
+  }, [dispatch, postType]);
 
   const handleRefresh = () => {
-    dispatch(refreshPosts());
+    dispatch(refreshPosts({ postType }));
   };
 
   const loadMorePosts = () => {
     if (!loading && hasMore) {
-      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10 }));
-      pageRef.current += 1; // Increment page after fetching
+      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10, postType }));
+      pageRef.current += 1;
     }
   };
 
   const handleFetchOlderPosts = () => {
     if (!loading && hasMore) {
-      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10 }));
+      dispatch(fetchSeenPosts({ page: pageRef.current, size: 10, postType }));
       pageRef.current += 1;
     }
   };
@@ -70,26 +81,19 @@ const MyFeed = () => {
     };
   }, [loading, hasMore]);
 
-  useEffect(() => {
-    if (posts.length > 0) {
-      const unseenPostIds = posts.filter((post) => !post.seen).map((post) => post.id);
-      if (unseenPostIds.length > 0) {
-        dispatch(markPostsAsSeen(unseenPostIds));
-      }
-    }
-  }, [posts, dispatch]);
+  const handlePostTypeChange = (event) => {
+    setPostType(event.target.value);
+    pageRef.current = 0;
+  };
 
   const handleUserProfileClick = (userId) => {
-    console.log("User Id selected at handleUserProfileClick: ")
     setSelectedUserId(userId);
-
-  }
+  };
 
   const handleBackToFeed = () => {
     setSelectedUserId(null);
-  }
+  };
 
-  // If a user is selected, render only the ProfilePage
   if (selectedUserId) {
     return <ProfilePage userId={selectedUserId} onBack={handleBackToFeed} />;
   }
@@ -97,6 +101,48 @@ const MyFeed = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-white pb-10">
       <div className="max-w-3xl mx-auto p-4 relative">
+        {/* Post Type Selector */}
+        <div className="flex justify-between items-center mb-6">
+          <ToggleButtonGroup
+            value={postType}
+            exclusive
+            onChange={(event, newPostType) => {
+              if (newPostType !== null) {
+                setPostType(newPostType); // Update the state only when a valid selection is made
+                pageRef.current = 0; // Reset pagination when post type changes
+              }
+            }}
+            size="small"
+            color="primary"
+            aria-label="post type"
+            sx={{
+              border: "none",
+              "& .MuiToggleButton-root": {
+                color: "white", // Default color for buttons
+                transition: "color 0.3s, background-color 0.3s", // Smooth transitions
+                "&.Mui-selected": {
+                  color: "orange", // Selected button text color
+                  backgroundColor: "rgba(255, 165, 0, 0.2)", // Light orange background for selected
+                },
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.1)", // Light hover effect
+                },
+              },
+            }}
+          >
+            <ToggleButton value="NORMAL" aria-label="normal post">
+              <PublicIcon />
+              <span className='ml-2 font-semibold text-white'>Public</span>
+            </ToggleButton> 
+            <ToggleButton value="INSTITUTE" aria-label="institute post">
+              <SchoolIcon />
+              <span className='ml-2 font-semibold text-white'>Institute</span>
+            </ToggleButton>
+            
+          </ToggleButtonGroup>
+
+        </div>
+
         {/* Refresh Button */}
         {showRefreshButton && (
           <div
@@ -119,26 +165,28 @@ const MyFeed = () => {
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
               <FeedIcon style={{ fontSize: '4rem' }} />
               <p className="mt-4">You've seen all current posts! Check older posts.</p>
-              {/* <button
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
+              <Button
+                variant="outlined"
+                size="medium"
+                sx={{
+                  color: 'orange',
+                  borderColor: 'orange',
+                  marginTop: '12px',
+                  '&:hover': {
+                    backgroundColor: 'orange',
+                    color: 'white',
+                  },
+                }}
                 onClick={handleFetchOlderPosts}
+                startIcon={<Autorenew />}
               >
                 Load Older Posts
-              </button> */}
-              <Button variant="outlined"
-                    size="medium"
-                    className="text-orange-400"
-                    sx={{color:"orange", borderColor:"orange", marginTop:"12px"}}
-                    onClick={handleFetchOlderPosts}
-                    startIcon={<Autorenew />}>
-                    Load Older Posts
-                </Button>
+              </Button>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
               <FeedIcon style={{ fontSize: '4rem' }} />
               <p className="mt-4">No more posts available.</p>
-
             </div>
           )
         ) : (
@@ -148,7 +196,12 @@ const MyFeed = () => {
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar src={post?.profilePicUrl} />
                   <div>
-                    <h3 onClick={()=>{handleUserProfileClick(post.userId)}} className="font-semibold cursor-pointer">{post.userName}</h3>
+                    <h3
+                      onClick={() => handleUserProfileClick(post.userId)}
+                      className="font-semibold cursor-pointer"
+                    >
+                      {post.userName}
+                    </h3>
                     <p className="text-gray-400 text-sm">{new Date(post.createdAt).toLocaleString()}</p>
                   </div>
                 </div>

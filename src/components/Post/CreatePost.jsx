@@ -49,6 +49,7 @@ const CreatePost = () => {
             setFile(null);
             setPreview(null);
             setPostType("NORMAL");
+            onClose();
         } catch (err) {
             console.error("Error in handlePost:", err);
         }
@@ -56,6 +57,7 @@ const CreatePost = () => {
 
     const handlePostTypeChange = (event, newPostType) => {
         if (newPostType !== null) {
+            console.log("New Post Type: ", newPostType);
             setPostType(newPostType);
         }
     };
@@ -82,7 +84,6 @@ const CreatePost = () => {
                         <p className="text-gray-400 text-sm">{user?.email || "No email provided"}</p>
                     </div>
                 </div>
-                {/* Toggle Button for Post Type */}
                 {/* Toggle Button for Post Type */}
                 <ToggleButtonGroup
                     value={postType}
@@ -112,10 +113,7 @@ const CreatePost = () => {
                     <ToggleButton value="NORMAL" aria-label="normal post">
                         <PublicIcon />
                     </ToggleButton>
-                    
                 </ToggleButtonGroup>
-
-
             </div>
 
             <div className="flex items-start space-x-4">
@@ -160,8 +158,9 @@ const CreatePost = () => {
                         {/* Post Button */}
                         <button
                             onClick={handlePost}
-                            className={`bg-blue-500 text-white px-5 py-2 rounded-full flex items-center hover:bg-blue-600 ${loading ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
+                            className={`bg-blue-500 text-white px-5 py-2 rounded-full flex items-center hover:bg-blue-600 ${
+                                loading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                             disabled={loading}
                         >
                             {loading ? "Posting..." : <SendIcon className="mr-2" />}
