@@ -15,10 +15,9 @@ import { getConnectionStatus, getRequestedUsersProfile, sendConnectionRequest } 
 import { fetchPosts } from "../../Redux/Slices/postSlice";
 import PostPage from "../../components/Post/PostPage";
 import { logout } from "../../Redux/Slices/authSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = ({ userId, onBack, userProfile }) => {
-    
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { profile, connectionStatus, loading, error } = useSelector(
@@ -28,8 +27,13 @@ const ProfilePage = ({ userId, onBack, userProfile }) => {
     useEffect(() => {
         dispatch(getRequestedUsersProfile(userId));
         dispatch(getConnectionStatus(userId));
-        dispatch(fetchPosts(userId));
     }, [dispatch, userId]);
+
+    useEffect(() => {
+        if (connectionStatus?.isConnected) {
+            dispatch(fetchPosts(userId));
+        }
+    }, [dispatch, userId, connectionStatus?.isConnected]);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -56,27 +60,25 @@ const ProfilePage = ({ userId, onBack, userProfile }) => {
         <div className="min-h-screen bg-gray-950 text-white">
             <div className="max-w-4xl mx-auto">
                 {/* Logout Button */}
-                {userProfile&&
-                (
-                <div className="flex justify-end m-4">
-                    <Button
-                        variant="outlined"
-                        startIcon={<Logout />}
-                        onClick={handleLogout}
-                        sx={{
-                            color: "white",
-                            borderColor: "red",
-                            '&:hover': {
-                                borderColor: "darkred",
-                                backgroundColor: "rgba(255, 0, 0, 0.1)",
-                            },
-                        }}
-                    >
-                        Logout
-                    </Button>
-                </div>
-                )
-                }
+                {userProfile && (
+                    <div className="flex justify-end m-4">
+                        <Button
+                            variant="outlined"
+                            startIcon={<Logout />}
+                            onClick={handleLogout}
+                            sx={{
+                                color: "white",
+                                borderColor: "red",
+                                "&:hover": {
+                                    borderColor: "darkred",
+                                    backgroundColor: "rgba(255, 0, 0, 0.1)",
+                                },
+                            }}
+                        >
+                            Logout
+                        </Button>
+                    </div>
+                )}
 
                 {/* Back Button */}
                 {!userProfile && (
@@ -203,7 +205,11 @@ const ProfilePage = ({ userId, onBack, userProfile }) => {
                     </div>
                 )}
             </div>
-            <PostPage requestedUserProfile={profile} requestedUserUserId={userId} />
+
+            {/* Conditionally render PostPage */}
+            {connectionStatus?.isConnected && (
+                <PostPage requestedUserProfile={profile} requestedUserUserId={userId} />
+            )}
         </div>
     );
 };

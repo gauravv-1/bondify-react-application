@@ -12,9 +12,9 @@ import { toast } from "react-toastify";
 
 const CreatePost = () => {
     const [content, setContent] = useState("");
-    const [file, setFile] = useState(null); // For image file
-    const [preview, setPreview] = useState(null); // For image preview
-    const [postType, setPostType] = useState("INSTITUTE"); // Default post type
+    const [file, setFile] = useState(null); 
+    const [preview, setPreview] = useState(null); 
+    const [postType, setPostType] = useState("INSTITUTE"); 
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.post);
 
@@ -27,9 +27,9 @@ const CreatePost = () => {
         const selectedFile = e.target.files[0];
         if (!selectedFile) return;
 
-        // Display image preview
+       
         setPreview(URL.createObjectURL(selectedFile));
-        setFile(selectedFile); // Set file for image upload
+        setFile(selectedFile); 
     };
 
     const handlePost = async () => {
@@ -44,7 +44,7 @@ const CreatePost = () => {
             console.log("Post dispatched successfully");
             toast.success("Post Created successfully!");
 
-            // Reset form fields
+            
             setContent("");
             setFile(null);
             setPreview(null);
@@ -74,7 +74,7 @@ const CreatePost = () => {
                         sx={{
                             width: 40,
                             height: 40,
-                            bgcolor: "#1E40AF", // Fallback background color
+                            bgcolor: "#1E40AF", 
                             color: "white",
                         }}
                     />
@@ -95,14 +95,14 @@ const CreatePost = () => {
                     sx={{
                         border: "none",
                         "& .MuiToggleButton-root": {
-                            color: "white", // White color for non-selected items
-                            transition: "color 0.3s, background-color 0.3s", // Smooth transitions
+                            color: "white", 
+                            transition: "color 0.3s, background-color 0.3s", 
                             "&.Mui-selected": {
-                                color: "orange", // Blue color for selected item
-                                backgroundColor: "rgba(29, 78, 216, 0.2)", // Light blue background
+                                color: "orange", 
+                                backgroundColor: "rgba(29, 78, 216, 0.2)", 
                             },
                             "&:hover": {
-                                backgroundColor: "rgba(255, 255, 255, 0.1)", // Light hover effect
+                                backgroundColor: "rgba(255, 255, 255, 0.1)", 
                             },
                         },
                     }}

@@ -35,7 +35,7 @@ export const fetchSeenPosts = createAsyncThunk(
   async ({ page, size ,postType}, { rejectWithValue }) => {
     try {
       console.log("At Thunk fetchSeenPosts")
-      const response = await api.get(`/api/v1/posts/core/feed/getSeenPosts`, { params: { page, size, postType } });
+      const response = await api.get(`/api/v1/posts/core/feed/getSeenPosts1`, { params: { page, size, postType } });
       console.log("Response data at thunk of fetchSeenPosts: ",response.data.data);
       return response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {

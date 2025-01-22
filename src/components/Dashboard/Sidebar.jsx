@@ -1,18 +1,15 @@
 import React from "react";
-import { Home, Search, Notifications, Message, Person, PostAdd, Email } from "@mui/icons-material";
+import { Home, Search, Notifications, Person, Email } from "@mui/icons-material";
 import AppLogo from './../../assets/logos/AppLogo.png'
 import { Avatar } from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useDispatch, useSelector } from "react-redux";
-import usePagination from "@mui/material/usePagination/usePagination";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../Redux/Slices/authSlice";
 
 
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+ 
     const { user,userProfile, loading: isLoading } = useSelector((state) => state.auth);
     const menuItems = [
         { name: "Home", icon: <Home sx={{fontSize:32}}/> },
@@ -56,11 +53,11 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                     <div className="flex items-center">
                         <Avatar
                             alt="Gaurav Pisal"
-                            src={userProfile?.profilePicUrl} // Replace with your avatar image URL
+                            src={userProfile?.profilePicUrl} 
                             sx={{
                                 width: 40,
                                 height: 40,
-                                bgcolor: "#1E40AF", // Fallback background color
+                                bgcolor: "#1E40AF", 
                                 color: "white",
                             }}
                         />
@@ -70,7 +67,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
                         </div>
                     </div>
 
-                    {/* Options (3 dots icon) */}
+                    
                     <div>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

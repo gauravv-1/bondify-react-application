@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
-import AddCircleIcon from "@mui/icons-material/AddCircle"; // MUI icon for create post
+import AddCircleIcon from "@mui/icons-material/AddCircle"; 
 import { Avatar } from "@mui/material";
-import { fetchPosts } from "../../Redux/Slices/postSlice"; // Redux action to fetch posts
+import { fetchPosts } from "../../Redux/Slices/postSlice"; 
 import CreatePost from "./CreatePost";
 
 const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
@@ -11,7 +11,7 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
   const dispatch = useDispatch();
   const { posts, loading, error } = useSelector((state) => state.post);
   const { user, userProfile, loading: isLoading } = useSelector((state) => state.auth);
-  // console.log("User Id:- ", user.id);
+  
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => {

@@ -34,6 +34,7 @@ const MyFeed = () => {
   const pageRef = useRef(0);
 
   useEffect(() => {
+    console.log("Fetching initial Post of type: ",postType);
     dispatch(fetchInitialPosts({ postType, page: pageRef.current, size: 10 }));
     const interval = setInterval(() => dispatch(checkForNewPosts()), 30000);
     return () => clearInterval(interval);
@@ -52,6 +53,7 @@ const MyFeed = () => {
 
   const handleFetchOlderPosts = () => {
     if (!loading && hasMore) {
+      console.log("Fetching Older Post of type: ",postType);
       dispatch(fetchSeenPosts({ page: pageRef.current, size: 10, postType }));
       pageRef.current += 1;
     }
@@ -80,6 +82,15 @@ const MyFeed = () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [loading, hasMore]);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      const unseenPostIds = posts.filter((post) => !post.seen).map((post) => post.id);
+      if (unseenPostIds.length > 0) {
+        dispatch(markPostsAsSeen(unseenPostIds));
+      }
+    }
+  }, [posts, dispatch]);
 
   const handlePostTypeChange = (event) => {
     setPostType(event.target.value);

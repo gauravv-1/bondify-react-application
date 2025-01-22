@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, Notifications, Message, Person, PostAdd } from "@mui/icons-material";
+import { Home, Message, Person } from "@mui/icons-material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const BottomNavbar = ({ activeSection, setActiveSection }) => {

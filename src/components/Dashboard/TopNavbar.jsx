@@ -10,8 +10,7 @@ const TopNavbar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
     { name: "Notifications", icon: <Notifications className="text-white" sx={{fontSize:30,color: activeSection === "Notifications" ? 'orange' : 'white'}}/> },
     { name: "Search", icon: <Search className="text-white"  sx={{fontSize:30,color: activeSection === "Search" ? 'orange' : 'white'}}/> },
-    // { name: "Messages", icon: <Message sx={{fontSize:30}}/> },
-    // { name: "Profile", icon: <Person sx={{fontSize:30}}/> },
+   
   ];
 
   return (
