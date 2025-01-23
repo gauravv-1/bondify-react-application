@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
  
-    const { user,userProfile, loading: isLoading } = useSelector((state) => state.auth);
+    const { user,userProfile, loading: isLoading } = useSelector((state) => state?.auth);
     const menuItems = [
         { name: "Home", icon: <Home sx={{fontSize:32}}/> },
         { name: "Post", icon: <AddCircleOutlineIcon sx={{fontSize:32}}/> },
@@ -33,15 +33,15 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
 
             {/* Menu Items */}
             <div className="flex flex-col space-y-4">
-                {menuItems.map((item) => (
+                {menuItems?.map((item) => (
                     <button
-                        key={item.name}
-                        onClick={() => setActiveSection(item.name)}
+                        key={item?.name}
+                        onClick={() => setActiveSection(item?.name)}
                         className={`flex items-center px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-700 ${activeSection === item.name ? "bg-gray-700" : ""
                             }`}
                     >
-                        <span className="mr-3">{item.icon}</span>
-                        <span className="text-xl">{item.name}</span>
+                        <span className="mr-3">{item?.icon}</span>
+                        <span className="text-xl">{item?.name}</span>
                     </button>
                 ))}
             </div>

@@ -67,11 +67,13 @@ const SearchPage = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {results.map((user) => (
+                {results
+                .map((user) => (
+                  
                   <div
-                    key={user.userId}
+                    key={user?.userId}
                     className="bg-gray-850 rounded-lg p-4 flex items-center space-x-4 hover:bg-gray-800 cursor-pointer"
-                    onClick={() => handleUserClick(user.userId)} // Handle user click
+                    onClick={() => handleUserClick(user?.userId)} // Handle user click
                   >
                     {/* User Avatar */}
                     <Avatar
@@ -82,9 +84,9 @@ const SearchPage = () => {
 
                     {/* User Info */}
                     <div className="flex-1">
-                      <h3 className="font-bold">{user.name}</h3>
+                      <h3 className="font-bold">{user?.name}</h3>
                       <p className="text-gray-400 text-sm">
-                        @{user.username} • {user.institute}
+                        @{user.username} • {user?.institute}
                       </p>
                     </div>
                   </div>

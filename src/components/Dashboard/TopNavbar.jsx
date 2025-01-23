@@ -22,10 +22,10 @@ const TopNavbar = ({ activeSection, setActiveSection }) => {
       <div className="flex space-x-4">
       {menuItems.map((item) => (
         <button
-          key={item.name}
+          key={item?.name}
           onClick={() => setActiveSection(item.name)}
           className={`text-white${
-            activeSection === item.name ? "text-blue-400" : "text-gray-400"
+            activeSection === item?.name ? "text-blue-400" : "text-gray-400"
           }`}
         >
           {item.icon}
