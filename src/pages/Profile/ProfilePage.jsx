@@ -17,12 +17,13 @@ import PostPage from "../../components/Post/PostPage";
 import { logout } from "../../Redux/Slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
-const ProfilePage = ({ userId, onBack, userProfile }) => {
+const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { profile, connectionStatus, loading, error } = useSelector(
         (state) => state.profile
     );
+    const { user} = useSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(getRequestedUsersProfile(userId));
@@ -54,6 +55,10 @@ const ProfilePage = ({ userId, onBack, userProfile }) => {
                 <p className="text-red-500">Error: {error}</p>
             </div>
         );
+    }
+
+    if (!user.isProfileComplete) {
+        setActiveSection("CompleteProfile");
     }
 
     return (

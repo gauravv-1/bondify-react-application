@@ -12,10 +12,14 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("jwt");
-  if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+
+  // Only add Authorization header if token exists and the request is NOT for the signup endpoint
+  if (token && !config.url.includes("/auth/signup")) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
+
 
 export default api;

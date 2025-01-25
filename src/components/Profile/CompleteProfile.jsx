@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  IconButton,
+  MenuItem,
+  TextField,
+  Typography,
+  Box,
+} from "@mui/material";
+import { Upload, Save } from "@mui/icons-material";
 import { completeUserProfile, fetchUserProfile } from "../../Redux/Slices/authSlice";
-import { useNavigate } from "react-router-dom";
 import { fetchInstitutes } from "../../Redux/Slices/Institute/fethInstituteSlice";
+import { uploadImage } from "../../Redux/Slices/postSlice";
+import { useNavigate } from "react-router-dom";
 
-const CompleteProfile = () => {
+const CompleteProfile = ({ setActiveSection }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [profileData, setProfileData] = useState({
     username: "",
     profilePicUrl: "",
     birthDate: "",
@@ -17,35 +28,51 @@ const CompleteProfile = () => {
   });
 
   const [institutes, setInstitutes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  // Fetch institutes on component mount
+  React.useEffect(() => {
+    const fetchInstituteData = async () => {
       try {
-        // Fetch institutes and set them directly from the dispatch response
+        setLoading(true);
         const response = await dispatch(fetchInstitutes()).unwrap();
-        setInstitutes(response); // Assume the response is the list of institutes
-        setLoading(false);
+        setInstitutes(response);
       } catch (err) {
-        console.error("Error fetching institutes:", err);
-        setError("Failed to fetch institutes. Please try again later.");
+        console.error("Failed to fetch institutes:", err);
+      } finally {
         setLoading(false);
       }
     };
-
-    fetchData();
+    fetchInstituteData();
   }, [dispatch]);
 
+  // Handle input changes
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setProfileData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    setImageLoading(true);
+    try {
+      const imageUrl = await dispatch(uploadImage(file)).unwrap();
+      setProfileData((prev) => ({ ...prev, profilePicUrl: imageUrl }));
+    } catch (err) {
+      console.error("Failed to upload image:", err);
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  // Handle profile save
+  const handleSaveProfile = async () => {
     const selectedInstitute = institutes.find(
-      (inst) => inst.id === parseInt(formData.instituteId)
+      (inst) => inst.id === parseInt(profileData.instituteId)
     );
 
     if (!selectedInstitute) {
@@ -54,9 +81,7 @@ const CompleteProfile = () => {
     }
 
     const payload = {
-      username: formData.username,
-      profilePicUrl: formData.profilePicUrl,
-      birthDate: formData.birthDate,
+      ...profileData,
       instituteDto: {
         id: selectedInstitute.id,
         name: selectedInstitute.name,
@@ -65,96 +90,197 @@ const CompleteProfile = () => {
     };
 
     try {
-      console.log(payload, "Payload of Profile Update");
       await dispatch(completeUserProfile(payload)).unwrap();
-      alert("Profile completed successfully!");
-
+      alert("Profile updated successfully!");
       // Refetch user profile
       await dispatch(fetchUserProfile());
-      navigate("/dashboard");
+      // navigate("/dashboard");
+      setActiveSection("Home");
     } catch (err) {
-      console.error("Error completing profile:", err);
-      alert("Failed to complete profile. Please try again later.");
+      console.error("Failed to update profile:", err);
+      alert("Failed to update profile. Please try again.");
     }
   };
 
-
-  if (loading) {
-    return <p>Loading institutes...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4">Complete Your Profile</h2>
+    <div className="min-h-screen bg-gray-950 text-white m-4">
+      <div className="max-w-4xl mx-auto">
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Username</label>
+        {/* <Typography
+          variant="h5"
+          sx={{
+            color: "#ffffff",
+            textAlign: "center",
+            mb: 3,
+            fontWeight: "bold",
+          }}
+        >
+          Complete Your Profile
+        </Typography> */}
+
+        {/* Profile Picture */}
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 4 }}>
+          <Avatar
+            src={profileData.profilePicUrl}
+            alt="Profile Picture"
+            sx={{
+              width: 160,
+              height: 160,
+              border: "3px solid #3f51b5",
+              mb: 2,
+            }}
+          />
+          <label htmlFor="profile-pic-upload">
             <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              className="w-full p-2 rounded bg-gray-700 text-white"
-              required
+              type="file"
+              id="profile-pic-upload"
+              style={{ display: "none" }}
+              onChange={handleImageUpload}
             />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Birth Date</label>
-            <input
-              type="date"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleInputChange}
-              className="w-full p-2 rounded bg-gray-700 text-white"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Profile Picture URL</label>
-            <input
-              type="text"
-              name="profilePicUrl"
-              value={formData.profilePicUrl}
-              onChange={handleInputChange}
-              className="w-full p-2 rounded bg-gray-700 text-white"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Select Institute</label>
-            <select
-              name="instituteId"
-              value={formData.instituteId}
-              onChange={handleInputChange}
-              className="w-full p-2 rounded bg-gray-700 text-white"
-              required
+            <Button
+              variant="outlined"
+              startIcon={imageLoading ? <CircularProgress size={20} /> : <Upload />}
+              component="span"
+              disabled={imageLoading}
+              sx={{
+                color: "orange",
+                borderColor: "orange",
+                "&:hover": {
+                  backgroundColor: "orange",
+                  color: "#ffffff",
+                },
+              }}
             >
-              <option value="" disabled>
-                Select your institute
-              </option>
-              {institutes.map((inst) => (
-                <option key={inst.id} value={inst.id}>
-                  {inst.name} - {inst.location}
-                </option>
-              ))}
-            </select>
-          </div>
+              {imageLoading ? "Uploading..." : "Upload Picture"}
+            </Button>
+          </label>
+        </Box>
 
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+        {/* Username */}
+        <TextField
+          label="Username"
+          name="username"
+          value={profileData.username}
+          onChange={handleInputChange}
+          fullWidth
+          variant="outlined"
+          sx={{
+            mb: 3,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "orange",
+              },
+              "&:hover fieldset": {
+                borderColor: "#757de8",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#3f51b5",
+              },
+            },
+            "& .MuiInputBase-input": {
+              color: "#ffffff",
+            },
+            "& .MuiInputLabel-root": {
+              color: "#9e9e9e",
+            },
+          }}
+        />
+
+        {/* Birth Date */}
+        <TextField
+          label="Birth Date"
+          type="date"
+          name="birthDate"
+          value={profileData.birthDate}
+          onChange={handleInputChange}
+          fullWidth
+          variant="outlined"
+          sx={{
+            mb: 3,
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "orange",
+              },
+              "&:hover fieldset": {
+                borderColor: "#757de8",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#3f51b5",
+              },
+            },
+            "& .MuiInputBase-input": {
+              color: "#ffffff",
+            },
+            "& .MuiInputLabel-root": {
+              color: "#9e9e9e",
+            },
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+
+        {/* Institute Selection */}
+        {loading ? (
+          <CircularProgress sx={{ color: "#3f51b5", display: "block", mx: "auto", mb: 3 }} />
+        ) : (
+          <TextField
+            label="Select Institute"
+            name="instituteId"
+            value={profileData.instituteId}
+            onChange={handleInputChange}
+            select
+            fullWidth
+            variant="outlined"
+            sx={{
+              mb: 3,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "orange",
+                },
+                "&:hover fieldset": {
+                  borderColor: "#757de8",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#3f51b5",
+                },
+              },
+              "& .MuiInputBase-input": {
+                color: "#ffffff",
+              },
+              "& .MuiInputLabel-root": {
+                color: "#9e9e9e",
+              },
+            }}
           >
-            Complete Profile
-          </button>
-        </form>
+            <MenuItem value="" disabled>
+              Choose your institute
+            </MenuItem>
+            {institutes.map((inst) => (
+              <MenuItem key={inst.id} value={inst.id}>
+                {inst.name} - {inst.location}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+
+        {/* Save Button */}
+        <Button
+          variant="contained"
+          startIcon={<Save />}
+          fullWidth
+          onClick={handleSaveProfile}
+          sx={{
+            backgroundColor: "#3f51b5",
+            "&:hover": {
+              backgroundColor: "#757de8",
+            },
+            color: "#ffffff",
+            py: 1.5,
+          }}
+        >
+          Save Profile
+        </Button>
       </div>
     </div>
   );

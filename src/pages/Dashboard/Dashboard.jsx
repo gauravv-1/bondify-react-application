@@ -31,7 +31,8 @@ const Dashboard = () => {
   
   useEffect(() => {
     if (!isLoading && user && !user.isProfileComplete) {
-      navigate("/complete-profile");
+      setActiveSection("CompleteProfile")
+      // navigate("/complete-profile");
     }
   }, [isLoading, user, navigate]);
 
@@ -48,7 +49,7 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <div className="flex-1 w-4/12 overflow-y-auto">
-          <MainContent section={activeSection} />
+          <MainContent section={activeSection} setActiveSection={setActiveSection}/>
         </div>
 
         {/* Right Sidebar */}

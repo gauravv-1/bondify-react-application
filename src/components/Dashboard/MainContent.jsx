@@ -6,10 +6,11 @@ import NotificationsPage from "../../pages/Notification/NotificationsPage";
 import ProfilePage from "../../pages/Profile/ProfilePage";
 import { useSelector } from "react-redux";
 import Message from "../../pages/Message/Message";
+import CompleteProfile from "../Profile/CompleteProfile";
 
 
 
-const MainContent = ({ section }) => {
+const MainContent = ({ section, setActiveSection }) => {
   const {user} = useSelector((state) => state?.auth);
   return (
     <div className="flex-1">
@@ -18,8 +19,9 @@ const MainContent = ({ section }) => {
       {section === 'Search' && <SearchPage />} 
       {section === 'Home' && <MyFeed />} 
       {section === 'Notifications' && <NotificationsPage />} 
-      {section === 'Profile' && <ProfilePage  userId={user?.id} userProfile={true}/>} 
+      {section === 'Profile' && <ProfilePage  userId={user?.id} userProfile={true} setActiveSection={setActiveSection}/>} 
       {section === 'Messages' && <Message/>} 
+      {section === 'CompleteProfile' && <CompleteProfile setActiveSection={setActiveSection}/>} 
       
     </div>
   );

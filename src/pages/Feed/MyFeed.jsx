@@ -34,7 +34,7 @@ const MyFeed = () => {
   const pageRef = useRef(0);
 
   useEffect(() => {
-    console.log("Fetching initial Post of type: ",postType);
+    console.log("Fetching initial Post of type: ", postType);
     dispatch(fetchInitialPosts({ postType, page: pageRef.current, size: 10 }));
     const interval = setInterval(() => dispatch(checkForNewPosts()), 30000);
     return () => clearInterval(interval);
@@ -53,7 +53,7 @@ const MyFeed = () => {
 
   const handleFetchOlderPosts = () => {
     if (!loading && hasMore) {
-      console.log("Fetching Older Post of type: ",postType);
+      console.log("Fetching Older Post of type: ", postType);
       dispatch(fetchSeenPosts({ page: pageRef.current, size: 10, postType }));
       pageRef.current += 1;
     }
@@ -144,12 +144,12 @@ const MyFeed = () => {
             <ToggleButton value="NORMAL" aria-label="normal post">
               <PublicIcon />
               <span className='ml-2 font-semibold text-white'>Public</span>
-            </ToggleButton> 
+            </ToggleButton>
             <ToggleButton value="INSTITUTE" aria-label="institute post">
               <SchoolIcon />
               <span className='ml-2 font-semibold text-white'>Institute</span>
             </ToggleButton>
-            
+
           </ToggleButtonGroup>
 
         </div>
@@ -158,7 +158,7 @@ const MyFeed = () => {
         {showRefreshButton && (
           <div
             className="mt-6 fixed top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                       bg-blue-700 text-white py-2 px-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2"
+                       bg-orange-700 text-white py-2 px-4 rounded-full shadow-lg cursor-pointer flex items-center gap-2"
             onClick={handleRefresh}
           >
             <RefreshIcon />
@@ -194,7 +194,8 @@ const MyFeed = () => {
                 Load Older Posts
               </Button>
             </div>
-          ) : (
+          ) 
+          : (
             <div className="flex flex-col items-center justify-center text-gray-500 mt-20">
               <FeedIcon style={{ fontSize: '4rem' }} />
               <p className="mt-4">No more posts available.</p>
