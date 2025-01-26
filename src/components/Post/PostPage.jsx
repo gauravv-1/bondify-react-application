@@ -67,7 +67,7 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
                   <img
                     src={post.imageUrl[0]}
                     alt="Post"
-                    className="w-full max-h-60 object-cover rounded-lg"
+                    className="w-full max-h-screen object-cover rounded-lg"
                   />
                 )}
               </div>
@@ -78,7 +78,7 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
         {/* CreatePost Modal */}
         {isModalOpen && (
           <div className="fixed m-6 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="relative bg-gray-900 p-4 rounded-lg shadow-lg max-w-lg w-full">
+            <div className="relative bg-gray-900 rounded-lg shadow-lg max-w-lg w-full sm:p-4">
               <button
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
                 onClick={handleCloseModal}
@@ -92,13 +92,13 @@ const PostPage = ({ requestedUserProfile, requestedUserUserId }) => {
 
         {/* Floating Create Post Button */}
 
-        {!requestedUserProfile &&
+        {!requestedUserProfile && !isModalOpen &&
           <button
             onClick={handleOpenModal}
-            className="absolute bottom-6 right-6 bg-orange-400 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all z-50"
+            className="absolute bottom-6 right-6 bg-orange-400 text-white p-4 rounded-full shadow-lg hover:bg-orange-600 transition-all z-50"
             style={{ position: 'fixed', bottom: '6rem', right: '2rem' }} // Fixed position with respect to the screen
           >
-            <AddCircleIcon fontSize="large" />
+            <AddCircleIcon fontSize="medium" />
           </button>
         }
       </div>

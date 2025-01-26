@@ -8,15 +8,15 @@ import AppLogo5 from './../../assets/logos/AppLogo5.png'
 import AppLogo6 from './../../assets/logos/AppLogo6.png'
 const TopNavbar = ({ activeSection, setActiveSection }) => {
   const menuItems = [
-    { name: "Notifications", icon: <Notifications className="text-white" sx={{fontSize:30,color: activeSection === "Notifications" ? 'orange' : 'white'}}/> },
-    { name: "Search", icon: <Search className="text-white"  sx={{fontSize:30,color: activeSection === "Search" ? 'orange' : 'white'}}/> },
+    { name: "Notifications", icon: <Notifications className="text-white" sx={{fontSize:25,color: activeSection === "Notifications" ? 'orange' : 'white'}}/> },
+    { name: "Search", icon: <Search className="text-white"  sx={{fontSize:25,color: activeSection === "Search" ? 'orange' : 'white'}}/> },
    
   ];
 
   return (
-    <div className="z-50 md:hidden flex justify-between items-center bg-gray-950 p-4 sticky top-0">
+    <div className="z-50 md:hidden flex justify-between items-center bg-gray-950 p-2 sticky top-0 ">
       {/* App Logo */}
-      <img src={AppLogo4} width='200px' alt="" />
+      <img src={AppLogo4} width='170px' alt="" />
 
       {/* Notifications and Messages */}
       <div className="flex space-x-4">

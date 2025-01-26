@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api.js";
 
+// Utility Function for Handling Errors
+const handleError = (error) =>
+  error.response?.data?.error || "Network error. Please try again later.";
+
 // Async Thunks
 export const loginUser = createAsyncThunk(
   "auth/login",
@@ -10,12 +14,7 @@ export const loginUser = createAsyncThunk(
       console.log("Login Successful:", response.data);
       return response.data;
     } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
-        return rejectWithValue(data.error || "Authentication failed.");
-      } else {
-        return rejectWithValue("Network error. Please try again later.");
-      }
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -28,12 +27,7 @@ export const signupUser = createAsyncThunk(
       console.log("Signup Successful:", response.data);
       return response.data;
     } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
-        return rejectWithValue(data.error || "Signup failed.");
-      } else {
-        return rejectWithValue("Network error. Please try again later.");
-      }
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -43,12 +37,10 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/api/v1/users/auth/getUserProfile");
-      console.log("User Profile at fetchUserProfile Thunk:", response.data);
+      console.log("User Profile Fetched:", response.data);
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.error || "Failed to fetch user profile."
-      );
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -57,17 +49,15 @@ export const completeUserProfile = createAsyncThunk(
   "auth/completeUserProfile",
   async (profileData, { rejectWithValue }) => {
     try {
-      console.log("ProfileUpdat Data at Thunk: ",profileData);
-      const response = await api.post("/api/v1/users/profile/completeProfile", profileData);
-      console.log("Complete Profile Successful:", response.data);
-      return response.data; // Assuming the response includes updated user profile
+      console.log("Profile Update Data:", profileData);
+      const response = await api.post(
+        "/api/v1/users/profile/completeProfile",
+        profileData
+      );
+      console.log("Profile Completion Successful:", response.data);
+      return response.data; // Assuming the response includes updated profile details
     } catch (error) {
-      if (error.response) {
-        const { data } = error.response;
-        return rejectWithValue(data.error || "Failed to complete profile.");
-      } else {
-        return rejectWithValue("Network error. Please try again later.");
-      }
+      return rejectWithValue(handleError(error));
     }
   }
 );
@@ -76,20 +66,25 @@ export const completeUserProfile = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null, // Stores logged-in user information
-    token: null, // Stores JWT token
-    loading: false, // Loading state for API calls
-    error: null, // Stores error messages
-    successMessage: null, // Stores success messages
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    token: localStorage.getItem("jwt") || null,
+    isAuthenticated: !!localStorage.getItem("jwt"), // Derived state based on token
+    loading: false,
+    error: null,
+    successMessage: null,
     isProfileComplete: false,
-    userProfile: null, // Stores userProfiledDto details
-    institute: null, // Stores instituteDto details
+    userProfile: null,
+    institute: null,
   },
   reducers: {
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("jwt"); // Clear token from localStorage
+      state.isAuthenticated = false;
+      state.userProfile = null;
+      state.institute = null;
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("user");
     },
   },
   extraReducers: (builder) => {
@@ -101,15 +96,16 @@ const authSlice = createSlice({
         state.successMessage = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        const { data } = action.payload;
         state.loading = false;
-        state.token = action.payload.data;
-        localStorage.setItem("jwt", action.payload.data);
+        state.token = data;
+        state.isAuthenticated = true;
+        localStorage.setItem("jwt", data);
         state.successMessage = "Login Successful!";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.successMessage = null;
       })
 
       // Signup Cases
@@ -118,7 +114,7 @@ const authSlice = createSlice({
         state.error = null;
         state.successMessage = null;
       })
-      .addCase(signupUser.fulfilled, (state, action) => {
+      .addCase(signupUser.fulfilled, (state) => {
         state.loading = false;
         state.successMessage = "Signup Successful!";
         state.error = null;
@@ -126,22 +122,20 @@ const authSlice = createSlice({
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.successMessage = null;
       })
 
       // Fetch User Profile Cases
       .addCase(fetchUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.isProfileComplete=false;
       })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        const { data } = action.payload;
         state.loading = false;
-        state.user = action.payload.data;
-        state.isProfileComplete = action.payload.data.isProfileComplete;
-        state.userProfile = action.payload.data.userProfiledDto || null;
-        state.institute = action.payload.data.userProfiledDto?.instituteDto || null;
-        state.error = null;
+        state.user = data;
+        state.isProfileComplete = data.isProfileComplete || false;
+        state.userProfile = data.userProfiledDto || null;
+        state.institute = data.userProfiledDto?.instituteDto || null;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
@@ -152,18 +146,17 @@ const authSlice = createSlice({
       .addCase(completeUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.successMessage = null;
       })
       .addCase(completeUserProfile.fulfilled, (state, action) => {
+        const { data } = action.payload;
         state.loading = false;
-        state.user = action.payload.data; // Assuming response.data contains updated profile
-        state.successMessage = "Profile completion successful!";
-        state.error = null;
+        state.user = data;
+        state.isProfileComplete = true;
+        state.successMessage = "Profile Completion Successful!";
       })
       .addCase(completeUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.successMessage = null;
       });
   },
 });

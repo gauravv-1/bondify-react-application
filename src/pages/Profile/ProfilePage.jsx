@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Button, IconButton } from "@mui/material";
+import { Avatar, Button, IconButton, Link } from "@mui/material";
 import {
     ArrowBack,
     LocationOn,
@@ -10,6 +10,10 @@ import {
     CheckCircle,
     HourglassEmpty,
     Logout,
+    Verified,
+    LinkedIn,
+    Instagram,
+    GitHub,
 } from "@mui/icons-material";
 import { getConnectionStatus, getRequestedUsersProfile, sendConnectionRequest } from "../../Redux/Slices/Profile/profileSlice";
 import { fetchPosts } from "../../Redux/Slices/postSlice";
@@ -20,10 +24,18 @@ import { useNavigate } from "react-router-dom";
 const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    let isVerified = false;
+    let PROFILE_TYPE = "NORMAL"
+    if(userId==8){
+        isVerified = true;
+        PROFILE_TYPE = "FOUNDER"; 
+
+    }
+    
     const { profile, connectionStatus, loading, error } = useSelector(
         (state) => state.profile
     );
-    const { user} = useSelector((state) => state.auth);
+    const { user } = useSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(getRequestedUsersProfile(userId));
@@ -109,9 +121,86 @@ const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
                                 className="mb-4"
                             />
                             {/* Name and Username */}
-                            <h2 className="text-2xl font-bold">{profile.name}</h2>
-                            <p className="text-gray-400 text-lg">@{profile?.userProfiledDto.username}</p>
+                            <h2 className="text-2xl font-bold flex items-center justify-center">
+                                {profile.name}
+                            </h2>
+                            <p className="text-gray-400 text-lg">
+                                @{profile?.userProfiledDto.username}
+                                {isVerified && (
+                                    <Verified
+                                        sx={{
+                                            color: "orange",
+                                            fontSize: "1.2rem",
+                                            marginLeft: "8px",
+                                        }}
+                                    />
+                                )}
+                            </p>
                         </div>
+                        {/* Profile Type and Links Section */}
+                        <div className="mt-1 flex flex-col items-center border-b-[0.1px]">
+                            {PROFILE_TYPE === "FOUNDER" && isVerified && (
+                                <div className="text-center">
+                                    <p className="text-base text-yellow-300">Founder of Bondify</p>
+                                    
+                                    <div className="flex space-x-4 mt-2 mb-2 justify-center">
+                                        <Link
+                                            href={`www.linkedin.com/in/gaurav-pisal7`}
+                                            target="_blank"
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            <LinkedIn fontSize="medium" />
+                                        </Link>
+                                        <Link
+                                            href={`https://www.instagram.com/gauravpisall/`}
+                                            target="_blank"
+                                            className="text-pink-500 hover:text-pink-700"
+                                            sx={{color:"#d62976"}}
+                                        >
+                                            <Instagram fontSize="medium" />
+                                        </Link>
+                                        <Link
+                                            href={`https://github.com/gauravv-1`}
+                                            target="_blank"
+                                            className="text-pink-500 hover:text-gray-400"
+                                            sx={{color:"white"}}
+                                        >
+                                            <GitHub fontSize="medium" />
+                                        </Link>
+                                    </div>
+                                </div>
+                                
+                            )}
+
+                            {PROFILE_TYPE === "EMPLOYEE" && isVerified && (
+                                <div className="text-center">
+                                    <p className="text-xl font-semibold">Employee of Bondify</p>
+                                    <div className="flex space-x-4 mt-4">
+                                        <Link
+                                            href={`https://www.linkedin.com/in/${profile.userProfiledDto.linkedin}`}
+                                            target="_blank"
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            <LinkedIn fontSize="large" />
+                                        </Link>
+                                        <Link
+                                            href={`https://www.instagram.com/${profile.userProfiledDto.instagram}`}
+                                            target="_blank"
+                                            className="text-pink-500 hover:text-pink-700"
+                                        >
+                                            <Instagram fontSize="large" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!isVerified && (
+                                <div className="mt-4">
+                                    <p className="text-xl font-semibold">Verified User</p>
+                                </div>
+                            )}
+                        </div>
+
 
                         {/* Additional Info Section */}
                         <div className="mt-6 space-y-4 text-gray-300">
@@ -132,6 +221,7 @@ const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
                             </div>
                         </div>
 
+                        
                         {/* Connection Status Section */}
                         <div className="mt-8 flex justify-center">
                             {!userProfile && connectionStatus && (
