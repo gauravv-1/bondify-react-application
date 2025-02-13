@@ -157,7 +157,7 @@ const Login = () => {
                 </form>
 
                 {/* Google Login */}
-                <div className="mt-6 flex items-center justify-center">
+                {/* <div className="mt-6 flex items-center justify-center">
                     <button
                         type="button"
                         className="w-full bg-white text-gray-900 font-medium py-2 px-4 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -189,7 +189,7 @@ const Login = () => {
                             <span className="ml-2">Log in with Google</span>
                         </div>
                     </button>
-                </div>
+                </div> */}
 
                 {/* Sign Up Link */}
                 <p className="mt-6 text-center text-gray-400">

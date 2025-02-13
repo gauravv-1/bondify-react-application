@@ -33,7 +33,7 @@ const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
     }
     
     const { profile, connectionStatus, loading, error } = useSelector(
-        (state) => state.profile
+        (state) => state?.profile
     );
     const { user } = useSelector((state) => state.auth);
 
@@ -69,7 +69,7 @@ const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
         );
     }
 
-    if (!user.isProfileComplete) {
+    if (!user?.isProfileComplete) {
         setActiveSection("CompleteProfile");
     }
 
@@ -194,11 +194,11 @@ const ProfilePage = ({ userId, onBack, userProfile, setActiveSection }) => {
                                 </div>
                             )}
 
-                            {!isVerified && (
+                            {/* {!isVerified && (
                                 <div className="mt-4">
                                     <p className="text-xl font-semibold">Verified User</p>
                                 </div>
-                            )}
+                            )} */}
                         </div>
 
 
